@@ -26,7 +26,7 @@ class Server(models.Model):
         upload_to='server_images/', blank=True, null=True)
 
     def __str__(self):
-        return f'{self.name} (Owner: )'
+        return f'{self.name} (Owner: {self.owner.username})'
 
 
 class Channel(models.Model):
