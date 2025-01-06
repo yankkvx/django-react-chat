@@ -1,21 +1,13 @@
 from django.db import models
 from django.conf import settings
-from PIL import Image
-from django.core.exceptions import ValidationError
+from .validators import validation_icon, validate_image_formant
 # Create your models here.
-
-
-def validate_image_formant(image):
-    img = Image.open(image)
-    if img.format not in ['JPEG', 'PNG', 'WebP']:
-        raise ValidationError(
-            'Unsupported format. Please upload JPEG, PNG or WebP image.')
 
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(max_length=350, null=True, blank=True)
-    icon = models.FileField(null=True, blank=True, upload_to='category_icons/')
+    icon = models.FileField(null=True, blank=True, upload_to='category_icons/', validators=[validation_icon])
 
     def __str__(self):
         return self.name
