@@ -1,10 +1,12 @@
-import HomeScreen from "./screens/HomeScreen";
 import {
     createBrowserRouter,
     createRoutesFromElements,
     Route,
     RouterProvider,
 } from "react-router";
+import { ThemeProvider } from "@mui/material/styles";
+import HomeScreen from "./screens/HomeScreen";
+import theme from "./styles/theme";
 
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -15,7 +17,11 @@ const router = createBrowserRouter(
 );
 
 const App = () => {
-    return <RouterProvider router={router} />;
+    return (
+        <ThemeProvider theme={theme}>
+            <RouterProvider router={router} />
+        </ThemeProvider>
+    );
 };
 
 export default App;
