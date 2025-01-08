@@ -6,10 +6,18 @@ declare module "@mui/material/styles" {
         header: {
             height: number;
         };
+        leftPanel: {
+            width: number;
+            closed: number,
+        };
     }
     interface ThemeOptions {
         header?: {
             height?: number;
+        };
+        leftPanel?: {
+            width?: number;
+            closed?: number,
         };
     }
 }
@@ -21,6 +29,10 @@ let theme = createTheme({
     },
     header: {
         height: 50,
+    },
+    leftPanel: {
+        width: 240,
+        closed: 70,
     },
     components: {
         MuiAppBar: {
