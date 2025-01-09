@@ -8,7 +8,11 @@ declare module "@mui/material/styles" {
         };
         leftPanel: {
             width: number;
-            closed: number,
+            closed: number;
+        };
+        rightPanel: {
+            width: number;
+            closed: number;
         };
     }
     interface ThemeOptions {
@@ -17,7 +21,11 @@ declare module "@mui/material/styles" {
         };
         leftPanel?: {
             width?: number;
-            closed?: number,
+            closed?: number;
+        };
+        rightPanel?: {
+            width?: number;
+            closed?: number;
         };
     }
 }
@@ -33,6 +41,9 @@ let theme = createTheme({
     leftPanel: {
         width: 240,
         closed: 70,
+    },
+    rightPanel: {
+        width: 240,
     },
     components: {
         MuiAppBar: {
