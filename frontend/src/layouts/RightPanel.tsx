@@ -1,11 +1,14 @@
 import { Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { ReactNode } from "react";
 
-const RightPanel = () => {
+type RightPanelProps = {
+    children: ReactNode;
+};
+
+const RightPanel = ({ children }: RightPanelProps) => {
     const theme = useTheme();
-    const rightBarcContent = [...Array(100)].map((_, i) => (
-        <Typography key={i}>{i + 1}</Typography>
-    ));
+
     return (
         <Box
             sx={{
@@ -17,7 +20,7 @@ const RightPanel = () => {
                 overflow: "auto",
             }}
         >
-            {rightBarcContent}
+            {children}
         </Box>
     );
 };

@@ -10,6 +10,7 @@ import {
 import { useTheme } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useState } from "react";
+import Categories from "./Categories";
 
 const Header = () => {
     const theme = useTheme();
@@ -17,10 +18,15 @@ const Header = () => {
     const [sideBar, setSideBar] = useState(false);
     const toggleButton = () => setSideBar((prevState) => !prevState);
 
-    // Generate mock content for the sidebar.
-    const drawerContent = [...Array(100)].map((_, i) => (
-        <Typography key={i}>{i + 1}</Typography>
-    ));
+    const categoriesList = () => (
+        <Box
+            sx={{ paddingTop: `${theme.header.height}px`, minWidth: 200 }}
+            role="presentation"
+            onClick={toggleButton}
+        >
+            <Categories />
+        </Box>
+    );
 
     return (
         <AppBar
@@ -49,7 +55,7 @@ const Header = () => {
                     </IconButton>
                 </Box>
                 <Drawer anchor="left" open={sideBar} onClose={toggleButton}>
-                    {drawerContent}
+                    {categoriesList()}
                 </Drawer>
                 <Link href="/" underline="none" color="inherit">
                     <Typography

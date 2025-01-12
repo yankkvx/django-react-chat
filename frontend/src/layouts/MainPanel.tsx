@@ -1,13 +1,13 @@
 import { Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { ReactNode } from "react";
 
-const MainPanel = () => {
+type MainProps = {
+    children: ReactNode;
+};
+
+const MainPanel = ({children}: MainProps) => {
     const theme = useTheme();
-
-    const mainContent = [...Array(100)].map((_, i) => (
-        <Typography key={i}>{i + 1}</Typography>
-    ));
-
     return (
         <Box
             sx={{
@@ -17,7 +17,7 @@ const MainPanel = () => {
                 overflow: "hidden",
             }}
         >
-            {mainContent}
+            {children}
         </Box>
     );
 };

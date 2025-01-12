@@ -1,17 +1,21 @@
-import {
-    Box,
-    useMediaQuery,
-    Typography,
-    Drawer as MuiDrawer,
-    styled,
-} from "@mui/material";
-import { useEffect, useState } from "react";
+import { Box, useMediaQuery, Drawer as MuiDrawer, styled } from "@mui/material";
+import React, { useEffect, useState, ReactNode } from "react";
 import { useTheme } from "@mui/material/styles";
 import SidebarToggle from "../components/SidebarToggle";
 
-const LeftPanel = () => {
+type Props = {
+    children: ReactNode;
+};
+
+type ChildProps = {
+    open: boolean;
+};
+
+type ChildElement = React.ReactElement<ChildProps>;
+
+const LeftPanel: React.FC<Props> = ({ children }) => {
     const theme = useTheme();
-    const isSmallScreen = useMediaQuery("(max-width: 599px");
+    const isSmallScreen = useMediaQuery("(max-width: 599px)");
     const [open, setOpen] = useState(isSmallScreen);
 
     useEffect(() => {
@@ -56,10 +60,6 @@ const LeftPanel = () => {
         }),
     }));
 
-    const sidebarContent = [...Array(100)].map((_, i) => (
-        <Typography key={i}>{i + 1}</Typography>
-    ));
-
     return (
         <Drawer
             open={open}
@@ -72,21 +72,29 @@ const LeftPanel = () => {
                 },
             }}
         >
-            <Box
-                sx={{
-                    position: "absolute",
-                    top: 0,
-                    right: 0,
-                    p: 0,
-                    width: open ? "auto" : "100%",
-                }}
-            >
-                <SidebarToggle
-                    open={open}
-                    handleClose={handleClose}
-                    handleOpen={handleOpen}
-                />
-                <Box>{sidebarContent}</Box>
+            <Box>
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: 0,
+                        right: 0,
+                        p: 0,
+                        width: open ? "auto" : "100%",
+                        height: "100%",
+                        overflowY: "auto",
+                    }}
+                >
+                    <SidebarToggle
+                        open={open}
+                        handleClose={handleClose}
+                        handleOpen={handleOpen}
+                    />
+                </Box>
+                {React.Children.map(children, (child) =>
+                    React.isValidElement(child)
+                        ? React.cloneElement(child as ChildElement, { open })
+                        : child
+                )}
             </Box>
         </Drawer>
     );
