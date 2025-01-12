@@ -2,10 +2,28 @@ from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.exceptions import ValidationError
 from django.db.models import Count
-from .models import Server
-from .serializers import ServerSerializer
+from .models import Server, Category
+from .serializers import ServerSerializer, CategorySerializer
+from .schema import server_docs, category_docs
+
+
+class CategoryViewSet(viewsets.ViewSet):
+    queryset = Category.objects.all()
+
+    @category_docs
+    def list(self, request):
+        try:
+            queryset = self.queryset
+            category_name = request.query_params.get('category_name')
+            if category_name:
+                queryset = queryset.filter(name=category_name)
+            
+
+        except Exception as e:
+            return Response({'error: ': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        serializer = CategorySerializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class ServerViewSet(viewsets.ViewSet):
@@ -15,44 +33,16 @@ class ServerViewSet(viewsets.ViewSet):
 
     queryset = Server.objects.all()
 
+    @server_docs
     def list(self, request):
-        """
-        Handles GET requests to list servers with optional filtering.
-
-        Filters:
-        - category: Filter servers by category name.
-        - by_user: Filter servers by membership of the requesting user.
-        - quantity: Limit the number of results returned.
-        - server_id: Retrieve a specific server by its ID.
-        - num_members: Count a number of server members.
-
-        Examples:
-
-        1. **List all servers**:
-            GET /servers/
-        2. **Filter by category**:
-            GET /servers/?category=programming
-        3. **Filter by user membership**:
-            GET /servers/?by_user=true
-        4. **Limit number of results**:
-            GET /servers/?quantity=2
-        5. **Retrieve server by id**:
-            GET /servers/?server_id=3
-        6. **Count the number of members**:
-            GET /servers/?num_members=true
-
-        Returns:
-        - JSON response containing the list of servers or an error message.
-
-        """
-
         try:
             queryset = self.queryset
 
             # Filter by category name if 'category' parameter is provided.
             category = request.query_params.get('category')
             if category:
-                queryset = queryset.filter(category__name=category)
+                print(f"Category: {category}")
+                queryset = queryset.filter(category__name__icontains=category)
 
             # Filter servers where the requesting user is a member if 'by_user' is true.
             by_user = request.query_params.get('by_user') == 'true'

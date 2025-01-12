@@ -9,10 +9,17 @@ class ChannelSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = '__all__'
+
+
 # Serializer for Channel model, converting it into JSON format.
 class ServerSerializer(serializers.ModelSerializer):
     server_channel = ChannelSerializer(many=True)
     num_members = serializers.SerializerMethodField()
+    category = serializers.CharField(source='category.name')
 
     class Meta:
         model = Server
