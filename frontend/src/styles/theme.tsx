@@ -34,6 +34,15 @@ declare module "@mui/material/styles" {
 let theme = createTheme({
     typography: {
         fontFamily: "Inter, sans-serif",
+        body1: {
+            fontWeight: 500,
+            letterSpacing: "-0.5",
+        },
+        body2: {
+            fontWeight: 500,
+            fontSize: "16px",
+            letterSpacing: "-0.5",
+        },
     },
     header: {
         height: 50,
