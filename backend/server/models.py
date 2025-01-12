@@ -7,7 +7,12 @@ from .validators import validation_icon, validate_image_formant
 class Category(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(max_length=350, null=True, blank=True)
-    icon = models.FileField(null=True, blank=True, upload_to='category_icons/', validators=[validation_icon])
+    icon = models.FileField(
+        null=True, blank=True, upload_to='category_icons/', validators=[validation_icon])
+
+    def save(self, *args, **kwargs):
+        self.name = self.name.lower()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
