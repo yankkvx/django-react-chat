@@ -11,6 +11,7 @@ import { useTheme } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useState } from "react";
 import Categories from "./Categories";
+import ColorModeToggle from "./ColorModeToggle";
 
 const Header = () => {
     const theme = useTheme();
@@ -57,7 +58,14 @@ const Header = () => {
                 <Drawer anchor="left" open={sideBar} onClose={toggleButton}>
                     {categoriesList()}
                 </Drawer>
-                <Link href="/" underline="none" color="inherit">
+                <Link
+                    href="/"
+                    underline="none"
+                    color="inherit"
+                    sx={{
+                        color: theme.palette.text.primary,
+                    }}
+                >
                     <Typography
                         variant="h6"
                         noWrap
@@ -72,6 +80,16 @@ const Header = () => {
                         FlowTalk
                     </Typography>
                 </Link>
+                <Box sx={{ flexGrow: 1 }} />
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        color: theme.palette.text.primary,
+                    }}
+                >
+                    <ColorModeToggle />
+                </Box>
             </Toolbar>
         </AppBar>
     );

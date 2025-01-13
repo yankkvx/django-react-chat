@@ -4,10 +4,9 @@ import {
     Route,
     RouterProvider,
 } from "react-router";
-import { ThemeProvider } from "@mui/material/styles";
 import HomeScreen from "./screens/HomeScreen";
 import ExploreScreen from "./screens/ExploreScreen";
-import theme from "./styles/theme";
+import ColorToggle from "./components/ColorToggle";
 
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -20,9 +19,9 @@ const router = createBrowserRouter(
 
 const App = () => {
     return (
-        <ThemeProvider theme={theme}>
+        <ColorToggle>
             <RouterProvider router={router} />
-        </ThemeProvider>
+        </ColorToggle>
     );
 };
 

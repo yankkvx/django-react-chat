@@ -98,7 +98,7 @@ const Servers = () => {
             </Box>
             <Grid container spacing={{ xs: 0, sm: 2 }}>
                 {dataResponse.map((item) => (
-                    <Grid key={item.id} xs={12} sm={6} md={6} lg={3}>
+                    <Grid item key={item.id} xs={12} sm={6} md={6} lg={3}>
                         <Card
                             sx={{
                                 heigh: "100%",
