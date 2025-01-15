@@ -126,6 +126,8 @@ USE_TZ = True
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+ASGI_APPLICATION = 'backend.asgi.application'
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
