@@ -121,7 +121,7 @@ const Servers = () => {
                                     component="img"
                                     image={
                                         item.image
-                                            ? `http://127.0.0.1:8000/${item.image}`
+                                            ? `http://127.0.0.1:8000${item.image}`
                                             : "https://source.unsplash.com/random/"
                                     }
                                     alt={item.name}
