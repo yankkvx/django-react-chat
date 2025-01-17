@@ -41,7 +41,6 @@ class ServerViewSet(viewsets.ViewSet):
             # Filter by category name if 'category' parameter is provided.
             category = request.query_params.get('category')
             if category:
-                print(f"Category: {category}")
                 queryset = queryset.filter(category__name__icontains=category)
 
             # Filter servers where the requesting user is a member if 'by_user' is true.
