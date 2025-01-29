@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { useParams, Link } from "react-router";
 import { useEffect } from "react";
-import useCrud from "../hooks/useCrud";
+import useCrud from "../../hooks/useCrud";
 
 interface Server {
     id: number;

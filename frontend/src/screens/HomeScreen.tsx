@@ -3,9 +3,9 @@ import Header from "../components/Header";
 import LeftPanel from "../layouts/LeftPanel";
 import RightPanel from "../layouts/RightPanel";
 import MainPanel from "../layouts/MainPanel";
-import TopServers from "../components/TopServers";
-import Categories from "../components/Categories";
-import Servers from "../components/Servers";
+import TopServers from "../components/LeftPanel/TopServers";
+import Categories from "../components/RightPanel/Categories";
+import Servers from "../components/MainPanel/Servers";
 
 const HomeScreen: React.FC = () => {
     return (

@@ -8,7 +8,7 @@ import {
     Box,
     Typography,
 } from "@mui/material";
-import useCrud from "../hooks/useCrud";
+import useCrud from "../../hooks/useCrud";
 import { useEffect } from "react";
 import { Link } from "react-router";
 import { useTheme } from "@mui/material/styles";

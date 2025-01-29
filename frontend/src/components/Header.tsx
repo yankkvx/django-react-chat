@@ -10,7 +10,7 @@ import {
 import { useTheme } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useState } from "react";
-import Categories from "./Categories";
+import Categories from "./RightPanel/Categories";
 import ColorModeToggle from "./ColorModeToggle";
 
 const Header = () => {

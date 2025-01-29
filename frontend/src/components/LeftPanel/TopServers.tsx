@@ -9,7 +9,7 @@ import {
     Typography,
     Avatar,
 } from "@mui/material";
-import useCrud from "../hooks/useCrud";
+import useCrud from "../../hooks/useCrud";
 import { useEffect, memo } from "react";
 import { Link } from "react-router";
 
