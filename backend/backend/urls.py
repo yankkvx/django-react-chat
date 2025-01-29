@@ -5,12 +5,14 @@ from django.conf.urls.static import static
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework.routers import DefaultRouter
 from server.views import ServerViewSet, CategoryViewSet
-from chat.consumers import MyConsumer
+from chat.consumers import ChatConsumer
+from chat.views import MessageViewSet
 
 
 router = DefaultRouter()
 router.register('api/server/select', ServerViewSet)
 router.register('api/server/category', CategoryViewSet)
+router.register('api/messages', MessageViewSet, basename='messages')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -19,8 +21,7 @@ urlpatterns = [
 ] + router.urls
 
 websockets_urls = [
-    path('ws/test', MyConsumer.as_asgi())
-]
+    path('<str:serverId>/<str:channelId>', ChatConsumer.as_asgi())]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
