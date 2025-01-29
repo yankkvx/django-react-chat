@@ -9,7 +9,7 @@ interface CrudState<T> {
     error: Error | null;
 }
 
-// Custom hook, that fetches data and manages loading and error states.
+// Custom hook that fetches data and manages loading and error states.
 const useCrud = <T>(initialData: T[], apiURL: string): CrudState<T> => {
     const jwtAxiosHandler = jwtHandler();
 
@@ -21,20 +21,27 @@ const useCrud = <T>(initialData: T[], apiURL: string): CrudState<T> => {
         setLoading(true);
         try {
             const response = await jwtAxiosHandler.get(
-                `http://127.0.0.1:8000/api/${apiURL}`,
-                {}
+                `http://127.0.0.1:8000/api/${apiURL}`
             );
             const data = response.data;
+
             setDataResponse(data);
             setError(null);
-            setLoading(false);
-            return data;
+            return data
         } catch (error: any) {
-            if (error.response && error.response.status === 400) {
-                setError(new Error("400"));
+            if (error.response) {
+                if (error.response.status === 400) {
+                    setError(new Error("400"));
+                } else if (error.response.status === 404) {
+                    setError(new Error("404"));
+                } else {
+                    setError(new Error(`Error ${error.response.status}`));
+                }
+            } else {
+                setError(new Error("Error network"));
             }
+        } finally {
             setLoading(false);
-            return Promise.reject(error);
         }
     };
 
