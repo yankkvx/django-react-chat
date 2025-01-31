@@ -67,7 +67,7 @@ const ServerScreen: React.FC = () => {
                 <ServerChannels data={dataResponse} />
             </RightPanel>
             <MainPanel>
-                <ChatInterface />
+                <ChatInterface data={dataResponse} />
             </MainPanel>
         </Box>
     );
