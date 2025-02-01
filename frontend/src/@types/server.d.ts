@@ -5,7 +5,7 @@ export interface Server {
     description: string;
     image: string;
     category: string;
-    channel_server: {
+    server_channel: {
         id: number;
         name: string;
         server: number;
