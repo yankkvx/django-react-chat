@@ -5,6 +5,7 @@ import useCrud from "../../hooks/useCrud";
 import { Server } from "../../@types/server";
 import { Box, Typography } from "@mui/material";
 import ChannelInterface from "./ChannelInterface";
+import MessageTemplate from "./MessageTemplate";
 
 interface Message {
     sender: string;
@@ -56,6 +57,7 @@ const ChatInterface = (props: ServerChannelProps) => {
         onMessage: (msg) => {
             const data = JSON.parse(msg.data);
             setNewMessage((prev_msg) => [...prev_msg, data.new_message]);
+            setMessage("");
         },
     });
 
@@ -120,31 +122,12 @@ const ChatInterface = (props: ServerChannelProps) => {
                     </Box>
                 </Box>
             ) : (
-                <div>
-                    {newMessage.map((msg: Message, index: number) => {
-                        return (
-                            <div key={index}>
-                                <p>{msg.sender}</p>
-                                <p>{msg.content}</p>
-                            </div>
-                        );
-                    })}
-                    <form>
-                        <label>Enter message: </label>
-                        <input
-                            type="text"
-                            value={message}
-                            onChange={(e) => setMessage(e.target.value)}
-                        />
-                    </form>
-                    <button
-                        onClick={() => {
-                            sendJsonMessage({ type: "message", message });
-                        }}
-                    >
-                        Send message
-                    </button>
-                </div>
+                <MessageTemplate
+                    newMessage={newMessage}
+                    setMessage={setMessage}
+                    message={message}
+                    sendJsonMessage={sendJsonMessage}
+                />
             )}
         </>
     );
