@@ -44,7 +44,6 @@ const ChannelInterface = (props: ServerChannelProps) => {
         </Box>
     );
 
-    console.log("Data: ", data);
     return (
         <>
             <Box
