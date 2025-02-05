@@ -60,6 +60,17 @@ const MessageTemplate = ({
         }
     };
 
+    function formatTimeStamp(timestamp) {
+        const date = new Date(Date.parse(timestamp));
+        const formatDate = new Intl.DateTimeFormat("en-US", {
+            month: "2-digit",
+            day: "2-digit",
+            year: "numeric",
+        })
+            .format(date)
+            .replace(/\//g, ".");
+        return `${formatDate}`;
+    }
     return (
         <>
             <Box
@@ -111,7 +122,16 @@ const MessageTemplate = ({
                                             ) : null
                                         }
                                         secondary={
-                                            <Box>
+                                            <Box
+                                                sx={{
+                                                    display: "flex",
+                                                    justifyContent:
+                                                        "space-between",
+                                                    alignItems: "center",
+                                                    gap: 1,
+                                                    width: "100%",
+                                                }}
+                                            >
                                                 <Typography
                                                     variant="body1"
                                                     style={{
@@ -120,15 +140,27 @@ const MessageTemplate = ({
                                                         textOverflow: "clip",
                                                     }}
                                                     sx={{
-                                                        display: "inline",
                                                         lineHeight: 1.4,
                                                         fontWeight: 400,
                                                         letterSpacing: "-0.2px",
+                                                        flexGrow: 1,
                                                     }}
                                                     component="span"
                                                     color="text.secondary"
                                                 >
-                                                    {msg.content}
+                                                    {msg.content}{" "}
+                                                </Typography>
+                                                <Typography
+                                                    style={{
+                                                        fontSize: "10px",
+                                                        color: "#888",
+                                                        textAlign: "right",
+                                                        minWidth: "60px",
+                                                    }}
+                                                >
+                                                    {formatTimeStamp(
+                                                        msg.timestamp
+                                                    )}
                                                 </Typography>
                                             </Box>
                                         }
