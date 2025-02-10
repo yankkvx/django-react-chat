@@ -8,22 +8,44 @@ import HomeScreen from "./screens/HomeScreen";
 import ExploreScreen from "./screens/ExploreScreen";
 import ColorToggle from "./components/ColorToggle";
 import ServerScreen from "./screens/ServerScreen";
+import LoginScreen from "./screens/LoginScreen";
+import AuthServiceProvider from "./context/AuthContext";
+import TestLogin from "./screens/TestLogin";
+import ProtectedRoute from "./services/ProtectedRoutes";
 
 const router = createBrowserRouter(
     createRoutesFromElements(
         <Route>
             <Route path="/" element={<HomeScreen />} />
             <Route path="/explore/:categoryName" element={<ExploreScreen />} />
-            <Route path="/server/:serverId/:channelId?" element={<ServerScreen />} />
+            <Route
+                path="/server/:serverId/:channelId?"
+                element={
+                    <ProtectedRoute>
+                        <ServerScreen />
+                    </ProtectedRoute>
+                }
+            />
+            <Route path="/login" element={<LoginScreen />} />
+            <Route
+                path="/logintest"
+                element={
+                    <ProtectedRoute>
+                        <TestLogin />
+                    </ProtectedRoute>
+                }
+            />
         </Route>
     )
 );
 
 const App = () => {
     return (
-        <ColorToggle>
-            <RouterProvider router={router} />
-        </ColorToggle>
+        <AuthServiceProvider>
+            <ColorToggle>
+                <RouterProvider router={router} />
+            </ColorToggle>
+        </AuthServiceProvider>
     );
 };
 
