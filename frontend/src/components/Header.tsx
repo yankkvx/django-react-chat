@@ -12,6 +12,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useState } from "react";
 import Categories from "./RightPanel/Categories";
 import ColorModeToggle from "./ColorModeToggle";
+import PersonIcon from "@mui/icons-material/Person";
+import { Link as LinkRouter } from "react-router";
 
 const Header = () => {
     const theme = useTheme();
@@ -81,14 +83,13 @@ const Header = () => {
                     </Typography>
                 </Link>
                 <Box sx={{ flexGrow: 1 }} />
-                <Box
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        color: theme.palette.text.primary,
-                    }}
-                >
-                    <ColorModeToggle />
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <IconButton>
+                        <ColorModeToggle />
+                    </IconButton>
+                    <IconButton component={LinkRouter} to="/login">
+                        <PersonIcon />
+                    </IconButton>
                 </Box>
             </Toolbar>
         </AppBar>
