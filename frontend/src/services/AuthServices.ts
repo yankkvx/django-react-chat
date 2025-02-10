@@ -15,18 +15,9 @@ export function useAuthService(): AuthServicesProps {
     const getUserDetails = async () => {
         try {
             const userId = localStorage.getItem("user_id");
-            const accessToken = localStorage.getItem("access_token");
-            if (!userId || !accessToken) {
-                console.error("user_id or access_token is not in localStorage");
-                return;
-            }
             const response = await axios.get(
                 `http://127.0.0.1:8000/api/user/?user_id=${userId}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                    },
-                }
+                { withCredentials: true }
             );
             const userDetails = response.data;
             localStorage.setItem("userDetails", JSON.stringify(userDetails));
@@ -39,38 +30,19 @@ export function useAuthService(): AuthServicesProps {
         }
     };
 
-    const getUserIdToken = (access: string) => {
-        const tokenParts = access.split(".");
-        const encodedPayload = tokenParts[1];
-        const decodedPayload = atob(encodedPayload);
-        const payloadData = JSON.parse(decodedPayload);
-        return payloadData.user_id;
-    };
-
+    // Login function that send response to the backend and handles response
     const login = async (username: string, password: string) => {
         try {
             const response = await axios.post(
                 "http://127.0.0.1:8000/api/token/",
-                { username, password }
+                { username, password },
+                { withCredentials: true }
             );
-
-            const { access, refresh } = response.data;
-
-            if (!access || !refresh) {
-                throw new Error("Failed to receive tokens");
-            }
-
-            // Save tokens to the local storage
-            localStorage.setItem("access_token", access);
-            localStorage.setItem("refresh_token", refresh);
-
-            const userId = getUserIdToken(access);
-            if (userId) {
-                localStorage.setItem("user_id", userId);
-                localStorage.setItem("isAuthenticated", "true");
-                setIsAuthenticated(true);
-                await getUserDetails();
-            }
+            const user_id = response.data.user_id;
+            localStorage.setItem("isAuthenticated", "true");
+            localStorage.setItem("user_id", user_id);
+            setIsAuthenticated(true);
+            await getUserDetails();
         } catch (err: any) {
             setIsAuthenticated(false);
             localStorage.setItem("isAuthenticated", "false");
@@ -79,10 +51,7 @@ export function useAuthService(): AuthServicesProps {
     };
 
     const logout = () => {
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("refresh_token");
-        localStorage.removeItem("userDetails");
-        localStorage.removeItem("user_id");
+        localStorage.clear();
         localStorage.setItem("isAuthenticated", "false");
         setIsAuthenticated(false);
     };
