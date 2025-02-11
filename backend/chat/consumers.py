@@ -20,11 +20,13 @@ class ChatConsumer(JsonWebsocketConsumer):
         self.user = None
 
     def connect(self):
+        self.user = self.scope['user']
         self.accept()  # Accept WebSocket connection
+        if not self.user.is_authenticated:
+            self.close(code=4001)
         # Extract channel id form the URL
         self.channel_id = self.scope['url_route']['kwargs']['channelId']
         # Set the user(currently hardcoded to user with ID 1 for testing)
-        self.user = User.objects.get(id=1)
 
         # Add WEbSocket connection to the group for real time communication
         async_to_sync(self.channel_layer.group_add)(
