@@ -6,6 +6,7 @@ import { Server } from "../../@types/server";
 import { Box, Typography } from "@mui/material";
 import ChannelInterface from "./ChannelInterface";
 import MessageTemplate from "./MessageTemplate";
+import { useAuthService } from "../../services/AuthServices";
 
 interface Message {
     sender: string;
@@ -28,6 +29,7 @@ const ChatInterface = (props: ServerChannelProps) => {
     const serverImageUrl = serverImage
         ? `http://127.0.0.1:8000${serverImage}`
         : "";
+    const { refreshAccessToken, logout } = useAuthService();
     const { fetchData } = useCrud<Server>(
         [],
         `messages/?channel_id=${channelId}`
@@ -36,6 +38,8 @@ const ChatInterface = (props: ServerChannelProps) => {
     const socketUrl = channelId
         ? `ws://127.0.0.1:8000/${serverId}/${channelId}`
         : null;
+    const [reconnectAttempt, setReconnectAttempt] = useState(0);
+    const maxConnections = 5;
 
     const { sendJsonMessage } = useWebSocket(socketUrl, {
         onOpen: async () => {
@@ -48,9 +52,26 @@ const ChatInterface = (props: ServerChannelProps) => {
                 console.log(error);
             }
         },
-        onClose: () => {
+        onClose: (event: CloseEvent) => {
+            if (event.code === 4001) {
+                console.log("Authentication error");
+                refreshAccessToken().catch((error) => {
+                    if (error.response && error.response.status === 401) {
+                        logout();
+                    }
+                });
+            }
             console.log("Connection closed");
+            setReconnectAttempt((prevReconnect) => prevReconnect + 1);
         },
+        shouldReconnect: (closeEvent) => {
+            if (closeEvent.code == 4001 && reconnectAttempt >= maxConnections) {
+                setReconnectAttempt(0)
+                return false;
+            }
+            return true;
+        },
+        reconnectInterval: 2000,
         onError: () => {
             console.log("Error");
         },

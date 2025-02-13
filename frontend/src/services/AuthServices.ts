@@ -50,11 +50,21 @@ export function useAuthService(): AuthServicesProps {
         }
     };
 
+    const refreshAccessToken = async () => {
+        try{
+            await axios.post(
+                'http://127.0.0.1:8000/api/token/refresh/', {}, {withCredentials: true}
+            )
+        } catch(refreshAccessError) {
+            return Promise.reject(refreshAccessError)
+        }
+    };
+
     const logout = () => {
         localStorage.clear();
         localStorage.setItem("isAuthenticated", "false");
         setIsAuthenticated(false);
     };
 
-    return { login, isAuthenticated, logout };
+    return { login, isAuthenticated, logout, refreshAccessToken };
 }
