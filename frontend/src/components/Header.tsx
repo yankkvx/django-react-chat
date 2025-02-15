@@ -6,6 +6,8 @@ import {
     Link,
     Typography,
     IconButton,
+    MenuItem,
+    Menu,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -14,12 +16,15 @@ import Categories from "./RightPanel/Categories";
 import ColorModeToggle from "./ColorModeToggle";
 import PersonIcon from "@mui/icons-material/Person";
 import { Link as LinkRouter } from "react-router";
+import { useAuthService } from "../services/AuthServices";
 
 const Header = () => {
     const theme = useTheme();
     // State to control the sidevar visibility.
     const [sideBar, setSideBar] = useState(false);
+    const { isAuthenticated, logout } = useAuthService();
     const toggleButton = () => setSideBar((prevState) => !prevState);
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
     const categoriesList = () => (
         <Box
@@ -30,6 +35,19 @@ const Header = () => {
             <Categories />
         </Box>
     );
+
+    const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleCloseMenu = () => {
+        setAnchorEl(null);
+    };
+
+    const handleLogout = () => {
+        logout();
+        setAnchorEl(null);
+    };
 
     return (
         <AppBar
@@ -85,9 +103,33 @@ const Header = () => {
                 <Box sx={{ flexGrow: 1 }} />
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                     <ColorModeToggle />
-                    <IconButton component={LinkRouter} to="/login">
-                        <PersonIcon />
-                    </IconButton>
+                    {isAuthenticated ? (
+                        <>
+                            <IconButton onClick={handleMenuClick}>
+                                <PersonIcon />
+                            </IconButton>
+                            <Menu
+                                anchorEl={anchorEl}
+                                open={Boolean(anchorEl)}
+                                onClose={handleCloseMenu}
+
+                            >
+                                <MenuItem
+                                    onClick={handleLogout}
+                                    sx={{
+                                        fontSize: "0.875rem",
+                                        padding: "1px 10px",
+                                    }}
+                                >
+                                    Logout
+                                </MenuItem>
+                            </Menu>
+                        </>
+                    ) : (
+                        <IconButton component={LinkRouter} to="/login">
+                            <PersonIcon />
+                        </IconButton>
+                    )}
                 </Box>
             </Toolbar>
         </AppBar>

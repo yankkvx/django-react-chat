@@ -45,10 +45,19 @@ export function useAuthService(): AuthServicesProps {
             localStorage.setItem("user_id", user_id);
             setIsAuthenticated(true);
             await getUserDetails();
+
+            const redirectPath = sessionStorage.getItem('redirectPath');
+            if (redirectPath) {
+                sessionStorage.removeItem('redirectPath')
+                navigate(redirectPath)
+            } else {
+                navigate('/')
+            }
+
         } catch (err: any) {
             setIsAuthenticated(false);
             localStorage.setItem("isAuthenticated", "false");
-            return err;
+            return err.response.status;
         }
     };
 
