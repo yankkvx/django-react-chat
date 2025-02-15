@@ -1,11 +1,12 @@
 from django.conf import settings
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.response import Response
 from .models import User
 from .serializers import UserSerializer, CustomTokenObtainPariSerializer, JWTCookieTokenRefreshSerializer
-from .schema import user_docs
+from .schema import user_docs, logout_docs
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework.views import APIView
 # Create your views here.
 
 
@@ -68,3 +69,26 @@ class UserViewSet(viewsets.ViewSet):
         user = request.user
         serializer = UserSerializer(user, many=False)
         return Response(serializer.data)
+
+
+class Logout(APIView):
+    """
+    View to log out the user by deleting JWT cookies
+    """
+    @logout_docs
+    def post(self, request):
+
+        refresh_token = request.COOKIES.get(
+            settings.SIMPLE_JWT['REFRESH_TOKEN_NAME'])
+        access_token = request.COOKIES.get(
+            settings.SIMPLE_JWT['ACCESS_TOKEN_NAME'])
+
+        if not refresh_token and not access_token:
+            return Response({'detail': 'No active session found to log out.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        response = Response({'detail': 'Successfully logged out'},
+                            status=status.HTTP_204_NO_CONTENT)
+
+        response.delete_cookie(settings.SIMPLE_JWT['REFRESH_TOKEN_NAME'])
+        response.delete_cookie(settings.SIMPLE_JWT['ACCESS_TOKEN_NAME'])
+        return response

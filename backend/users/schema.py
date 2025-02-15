@@ -44,3 +44,14 @@ user_docs = extend_schema(
     ],
     tags=["Users"],
 )
+
+
+logout_docs = extend_schema(
+    summary="Logout user by deleting JWT cookies",
+    description="Handles POST requests to log out a user. This deletes the JWT cookies for authentication.",
+    responses={
+        204: OpenApiTypes.OBJECT,
+        400: OpenApiTypes.OBJECT
+    },
+    tags=["Authentication"]
+)
