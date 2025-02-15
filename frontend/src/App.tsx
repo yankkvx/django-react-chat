@@ -1,9 +1,4 @@
-import {
-    createBrowserRouter,
-    createRoutesFromElements,
-    Route,
-    RouterProvider,
-} from "react-router";
+import { Routes, Route, BrowserRouter } from "react-router";
 import HomeScreen from "./screens/HomeScreen";
 import ExploreScreen from "./screens/ExploreScreen";
 import ColorToggle from "./components/ColorToggle";
@@ -13,39 +8,38 @@ import AuthServiceProvider from "./context/AuthContext";
 import TestLogin from "./screens/TestLogin";
 import ProtectedRoute from "./services/ProtectedRoutes";
 
-const router = createBrowserRouter(
-    createRoutesFromElements(
-        <Route>
-            <Route path="/" element={<HomeScreen />} />
-            <Route path="/explore/:categoryName" element={<ExploreScreen />} />
-            <Route
-                path="/server/:serverId/:channelId?"
-                element={
-                    <ProtectedRoute>
-                        <ServerScreen />
-                    </ProtectedRoute>
-                }
-            />
-            <Route path="/login" element={<LoginScreen />} />
-            <Route
-                path="/logintest"
-                element={
-                    <ProtectedRoute>
-                        <TestLogin />
-                    </ProtectedRoute>
-                }
-            />
-        </Route>
-    )
-);
-
 const App = () => {
     return (
-        <AuthServiceProvider>
-            <ColorToggle>
-                <RouterProvider router={router} />
-            </ColorToggle>
-        </AuthServiceProvider>
+        <BrowserRouter>
+            <AuthServiceProvider>
+                <ColorToggle>
+                    <Routes>
+                        <Route path="/" element={<HomeScreen />} />
+                        <Route
+                            path="/explore/:categoryName"
+                            element={<ExploreScreen />}
+                        />
+                        <Route
+                            path="/server/:serverId/:channelId?"
+                            element={
+                                <ProtectedRoute>
+                                    <ServerScreen />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route path="/login" element={<LoginScreen />} />
+                        <Route
+                            path="/logintest"
+                            element={
+                                <ProtectedRoute>
+                                    <TestLogin />
+                                </ProtectedRoute>
+                            }
+                        />
+                    </Routes>
+                </ColorToggle>
+            </AuthServiceProvider>
+        </BrowserRouter>
     );
 };
 

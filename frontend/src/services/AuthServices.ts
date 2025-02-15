@@ -1,8 +1,10 @@
 import axios from "axios";
 import { AuthServicesProps } from "../@types/authService";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 
 export function useAuthService(): AuthServicesProps {
+    const navigate = useNavigate()
     const getAuthenticatedValue = () => {
         const authenticated = localStorage.getItem("isAuthenticated");
         return authenticated !== null && authenticated === "true";
@@ -60,10 +62,16 @@ export function useAuthService(): AuthServicesProps {
         }
     };
 
-    const logout = () => {
+    const logout = async () => {
         localStorage.clear();
         localStorage.setItem("isAuthenticated", "false");
         setIsAuthenticated(false);
+        try{
+            await axios.post('http://127.0.0.1:8000/api/logout/')
+        } catch(err: any) {
+            return err
+        }
+        navigate('/login')
     };
 
     return { login, isAuthenticated, logout, refreshAccessToken };
