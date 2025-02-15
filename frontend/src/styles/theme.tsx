@@ -61,8 +61,14 @@ export const createMuiTheme = (mode: "light" | "dark") => {
         components: {
             MuiAppBar: {
                 defaultProps: {
-                    color: "default",
                     elevation: 0,
+                },
+                styleOverrides: {
+                    root: ({ theme }) => ({
+                        backgroundColor: theme.palette.background.default,
+                        color: theme.palette.text.primary,
+                        borderBottom: `1px solid ${theme.palette.divider}`,
+                    }),
                 },
             },
         },
