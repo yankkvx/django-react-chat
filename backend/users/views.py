@@ -3,11 +3,12 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from .models import User
 from .serializers import UserSerializer, CustomTokenObtainPariSerializer, JWTCookieTokenRefreshSerializer, RegisterSerializer
-from .schema import user_docs, logout_docs
+from .schema import user_docs, logout_docs, register_docs
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework.views import APIView
 from django.contrib.auth.hashers import make_password
+import re
 # Create your views here.
 
 
@@ -102,7 +103,7 @@ class RegisterUser(APIView):
     performs validation to ensure unique email and username,
     and creates a new user if all validations pass
     """
-
+    @register_docs
     def post(self, request):
         # Get the data from the request
         data = request.data
@@ -115,6 +116,12 @@ class RegisterUser(APIView):
         # Check if the email is already taken
         if User.objects.filter(username=data['username']).exists():
             return Response({'detail': 'This username is already taken.'}, status=status.HTTP_409_CONFLICT)
+
+        if len(data['password']) < 8:
+            return Response({'detail': 'Password must be at least 8 characters long.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if ' ' in data['password']:
+            return Response({'detail': 'Password cannot contain spaces.'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Create the user if validation passes
         try:

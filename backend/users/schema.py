@@ -1,6 +1,6 @@
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
-from .serializers import UserSerializer
+from .serializers import UserSerializer, RegisterSerializer
 
 user_docs = extend_schema(
     summary="Retrieve a list of users with optional filtering",
@@ -53,5 +53,41 @@ logout_docs = extend_schema(
         204: OpenApiTypes.OBJECT,
         400: OpenApiTypes.OBJECT
     },
+    tags=["Authentication"]
+)
+
+register_docs = extend_schema(
+    summary="Register a new user",
+    description="""
+    Handles POST requests to register a new user by providing the following data:
+    - username: The username of the user.
+    - email: The email address of the user.
+    - password: The password for the new user (it will be hashed). **Make sure to include this field in the request body.**
+    - profile_image: (Optional) The profile image of the user.
+
+    The view performs checks to ensure that the email and username are unique. 
+    If validation passes, the user will be created and returned with their data.
+
+    Example Request Body:
+    json
+    {
+        "username": "newuser",
+        "email": "newuser@email.com",
+        "password": "password123",
+        "profile_image": "image.jpg"
+    }
+    
+
+    Returns:
+    - 201: A successful registration response with user data (without password).
+    - 409: Conflict, if the username or email is already taken.
+    - 500: Internal server error, in case of any server-related issue.
+    """,
+    responses={
+        201: RegisterSerializer,  # Note: this serializer doesn't include password in the response
+        409: OpenApiTypes.OBJECT,
+        500: OpenApiTypes.OBJECT,
+    },
+    request=RegisterSerializer,
     tags=["Authentication"]
 )
