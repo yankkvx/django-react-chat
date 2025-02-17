@@ -6,9 +6,9 @@ from .serializers import UserSerializer, CustomTokenObtainPariSerializer, JWTCoo
 from .schema import user_docs, logout_docs, register_docs
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework.views import APIView
 from django.contrib.auth.hashers import make_password
-import re
 # Create your views here.
 
 
@@ -96,7 +96,7 @@ class Logout(APIView):
         return response
 
 
-class RegisterUser(APIView):
+class RegisterUser(SetJWTInCookiesMixin, APIView):
     """
     View to handle user registration
     Accepts a POST request with the user data and profile image, 
@@ -117,9 +117,11 @@ class RegisterUser(APIView):
         if User.objects.filter(username=data['username']).exists():
             return Response({'detail': 'This username is already taken.'}, status=status.HTTP_409_CONFLICT)
 
+        # Validate that the password is at least 8 characters long
         if len(data['password']) < 8:
             return Response({'detail': 'Password must be at least 8 characters long.'}, status=status.HTTP_400_BAD_REQUEST)
-        
+
+        # Ensure the password does not contain spaces
         if ' ' in data['password']:
             return Response({'detail': 'Password cannot contain spaces.'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -131,8 +133,17 @@ class RegisterUser(APIView):
                 profile_image=profile_image,
                 password=make_password(data['password']),
             )
+
+            refresh_token = RefreshToken.for_user(user)
+            access_token = str(refresh_token.access_token)
+
             serializer = RegisterSerializer(user, many=False)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            response = Response(
+                serializer.data, status=status.HTTP_201_CREATED)
+
+            response.data['access'] = access_token
+            response.data['refresh'] = str(refresh_token)
+            return self.finalize_response(request, response)
 
         except Exception as e:
             return Response({'detail': 'An error occurred during registration.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
