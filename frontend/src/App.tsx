@@ -7,6 +7,7 @@ import LoginScreen from "./screens/LoginScreen";
 import AuthServiceProvider from "./context/AuthContext";
 import TestLogin from "./screens/TestLogin";
 import ProtectedRoute from "./services/ProtectedRoutes";
+import SignUpScreen from "./screens/SignUpScreen";
 
 const App = () => {
     return (
@@ -36,6 +37,7 @@ const App = () => {
                                 </ProtectedRoute>
                             }
                         />
+                        <Route path="/sign-up" element={<SignUpScreen />} />
                     </Routes>
                 </ColorToggle>
             </AuthServiceProvider>

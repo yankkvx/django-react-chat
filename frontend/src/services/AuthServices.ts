@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 
 export function useAuthService(): AuthServicesProps {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const getAuthenticatedValue = () => {
         const authenticated = localStorage.getItem("isAuthenticated");
         return authenticated !== null && authenticated === "true";
@@ -46,14 +46,13 @@ export function useAuthService(): AuthServicesProps {
             setIsAuthenticated(true);
             await getUserDetails();
 
-            const redirectPath = sessionStorage.getItem('redirectPath');
+            const redirectPath = sessionStorage.getItem("redirectPath");
             if (redirectPath) {
-                sessionStorage.removeItem('redirectPath')
-                navigate(redirectPath)
+                sessionStorage.removeItem("redirectPath");
+                navigate(redirectPath);
             } else {
-                navigate('/')
+                navigate("/");
             }
-
         } catch (err: any) {
             setIsAuthenticated(false);
             localStorage.setItem("isAuthenticated", "false");
@@ -62,12 +61,14 @@ export function useAuthService(): AuthServicesProps {
     };
 
     const refreshAccessToken = async () => {
-        try{
+        try {
             await axios.post(
-                'http://127.0.0.1:8000/api/token/refresh/', {}, {withCredentials: true}
-            )
-        } catch(refreshAccessError) {
-            return Promise.reject(refreshAccessError)
+                "http://127.0.0.1:8000/api/token/refresh/",
+                {},
+                { withCredentials: true }
+            );
+        } catch (refreshAccessError) {
+            return Promise.reject(refreshAccessError);
         }
     };
 
@@ -75,13 +76,39 @@ export function useAuthService(): AuthServicesProps {
         localStorage.clear();
         localStorage.setItem("isAuthenticated", "false");
         setIsAuthenticated(false);
-        try{
-            await axios.post('http://127.0.0.1:8000/api/logout/')
-        } catch(err: any) {
-            return err
+        try {
+            await axios.post("http://127.0.0.1:8000/api/logout/");
+        } catch (err: any) {
+            return err;
         }
-        navigate('/login')
+        navigate("/login");
     };
 
-    return { login, isAuthenticated, logout, refreshAccessToken };
+    const signUp = async (formData: FormData) => {
+        try {
+            const response = await axios.post(
+                "http://127.0.0.1:8000/api/sign-up/",
+                formData,
+                { withCredentials: true }
+            );
+            const user_id = response.data.user_id;
+            localStorage.setItem("isAuthenticated", "true");
+            localStorage.setItem("user_id", user_id);
+            setIsAuthenticated(true);
+            await getUserDetails();
+            const redirectPath = sessionStorage.getItem("redirectPath");
+            if (redirectPath) {
+                sessionStorage.removeItem("redirectPath");
+                navigate(redirectPath);
+            } else {
+                navigate("/");
+            }
+        } catch (err: any) {
+            setIsAuthenticated(false);
+            localStorage.setItem("isAuthenticated", "false");
+            return err.response.status;
+        }
+    };
+
+    return { login, isAuthenticated, logout, refreshAccessToken, signUp };
 }
