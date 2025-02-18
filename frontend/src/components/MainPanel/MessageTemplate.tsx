@@ -12,11 +12,13 @@ import {
 import { Link } from "react-router";
 import SendIcon from "@mui/icons-material/Send";
 import ScrollChat from "./ScrollChat";
+import { MEDIA_URL } from "../../api-config";
 
 interface Message {
     sender: string;
     content: string;
     timestamp: string;
+    profile_image: string;
 }
 
 interface MessageTemplateProps {
@@ -60,7 +62,7 @@ const MessageTemplate = ({
         }
     };
 
-    function formatTimeStamp(timestamp) {
+    function formatTimeStamp(timestamp: string) {
         const date = new Date(Date.parse(timestamp));
         const formatDate = new Intl.DateTimeFormat("en-US", {
             month: "2-digit",
@@ -71,6 +73,26 @@ const MessageTemplate = ({
             .replace(/\//g, ".");
         return `${formatDate}`;
     }
+
+    const getProfileImage = (msg: Message) => {
+        return msg.profile_image
+            ? `${MEDIA_URL}${msg.profile_image}`
+            : "/default-avatar.png";
+    };
+
+    
+    const handleSendClick = (
+        e: React.MouseEvent<HTMLDivElement, MouseEvent>
+    ) => {
+        e.preventDefault(); 
+        if (message.trim()) {
+            sendJsonMessage({
+                type: "message",
+                message,
+            } as sendMessageData);
+        }
+    };
+
     return (
         <>
             <Box
@@ -87,7 +109,10 @@ const MessageTemplate = ({
                                     {manyMessagesFromOneUser ? (
                                         <ListItemAvatar>
                                             <Link to={`/profile/${msg.sender}`}>
-                                                <Avatar alt="" />
+                                                <Avatar
+                                                    alt=""
+                                                    src={getProfileImage(msg)}
+                                                />
                                             </Link>
                                         </ListItemAvatar>
                                     ) : (
@@ -202,7 +227,7 @@ const MessageTemplate = ({
                                             cursor: "pointer",
                                             ml: 1,
                                         }}
-                                        onClick={submitButton}
+                                        onClick={handleSendClick}
                                     >
                                         <SendIcon />
                                     </Box>
