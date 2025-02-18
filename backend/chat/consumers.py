@@ -48,6 +48,9 @@ class ChatConsumer(JsonWebsocketConsumer):
         new_message = Message.objects.create(
             communication=communication, sender=sender, content=content)
 
+        # Get a profile image url
+        profile_image_url = sender.profile_image.url if sender.profile_image else ''
+
         # Send the new message to all clients in the group for real-time updates
         async_to_sync(self.channel_layer.group_send)(
             self.channel_id,
@@ -57,7 +60,8 @@ class ChatConsumer(JsonWebsocketConsumer):
                     'id': new_message.id,
                     'sender': new_message.sender.username,
                     'content': new_message.content,
-                    'timestamp': new_message.timestamp.isoformat()
+                    'timestamp': new_message.timestamp.isoformat(),
+                    'profile_image': profile_image_url,
                 },
             },
         )
