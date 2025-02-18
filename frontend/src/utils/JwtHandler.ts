@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 import { useNavigate } from "react-router";
 import { useAuthService } from "../services/AuthServices";
+import { MAIN_URL } from "../api-config";
 
 // Enable sending cookies with every request globally
 axios.defaults.withCredentials = true;
@@ -24,7 +25,7 @@ const jwtHandler = (): AxiosInstance => {
                 try {
                     // Request a new access token using the refresh token
                     const response = await axios.post(
-                        "http://127.0.0.1:8000/api/token/refresh/"
+                        `${MAIN_URL}/token/refresh/`
                     );
                     if (response.status == 200) {
                         // restart the original request with a new token

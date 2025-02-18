@@ -16,6 +16,7 @@ import {
 import { useParams, Link } from "react-router";
 import { useEffect } from "react";
 import useCrud from "../../hooks/useCrud";
+import { MAIN_URL, MEDIA_URL } from "../../api-config";
 
 interface Server {
     id: number;
@@ -121,8 +122,8 @@ const Servers = () => {
                                     component="img"
                                     image={
                                         item.image
-                                            ? `http://127.0.0.1:8000${item.image}`
-                                            : "https://source.unsplash.com/random/"
+                                            ? `${MEDIA_URL}${item.image}`
+                                            : ""
                                     }
                                     alt={item.name}
                                     sx={{
@@ -149,7 +150,7 @@ const Servers = () => {
                                                         alt="Server"
                                                         src={
                                                             item.image
-                                                                ? `http://127.0.0.1:8000${item.image}`
+                                                                ? `${MEDIA_URL}${item.image}`
                                                                 : undefined
                                                         }
                                                     ></Avatar>

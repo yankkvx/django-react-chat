@@ -13,6 +13,7 @@ import { useParams } from "react-router";
 import { useState } from "react";
 import ServerChannels from "../RightPanel/ServerChannels";
 import { Link } from "react-router";
+import { MEDIA_URL } from "../../api-config";
 
 interface ServerChannelProps {
     data: Server[];
@@ -31,7 +32,7 @@ const ChannelInterface = (props: ServerChannelProps) => {
             )?.name || "Home";
     const serverImage = data?.[0]?.image ?? "";
     const serverImageUrl = serverImage
-        ? `http://127.0.0.1:8000${serverImage}`
+        ? `${MEDIA_URL}${serverImage}`
         : "";
     const toggleButton = () => setSideBar((prevState) => !prevState);
     const channelsList = () => (

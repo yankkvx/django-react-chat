@@ -2,6 +2,7 @@ import axios from "axios";
 import { AuthServicesProps } from "../@types/authService";
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import { MAIN_URL } from "../api-config";
 
 export function useAuthService(): AuthServicesProps {
     const navigate = useNavigate();
@@ -18,7 +19,7 @@ export function useAuthService(): AuthServicesProps {
         try {
             const userId = localStorage.getItem("user_id");
             const response = await axios.get(
-                `http://127.0.0.1:8000/api/user/?user_id=${userId}`,
+                `${MAIN_URL}/user/?user_id=${userId}`,
                 { withCredentials: true }
             );
             const userDetails = response.data;
@@ -36,7 +37,7 @@ export function useAuthService(): AuthServicesProps {
     const login = async (username: string, password: string) => {
         try {
             const response = await axios.post(
-                "http://127.0.0.1:8000/api/token/",
+                `${MAIN_URL}/token/`,
                 { username, password },
                 { withCredentials: true }
             );
@@ -63,7 +64,7 @@ export function useAuthService(): AuthServicesProps {
     const refreshAccessToken = async () => {
         try {
             await axios.post(
-                "http://127.0.0.1:8000/api/token/refresh/",
+                `${MAIN_URL}/token/refresh/`,
                 {},
                 { withCredentials: true }
             );
@@ -77,7 +78,7 @@ export function useAuthService(): AuthServicesProps {
         localStorage.setItem("isAuthenticated", "false");
         setIsAuthenticated(false);
         try {
-            await axios.post("http://127.0.0.1:8000/api/logout/");
+            await axios.post(`${MAIN_URL}/logout/`);
         } catch (err: any) {
             return err;
         }
@@ -87,7 +88,7 @@ export function useAuthService(): AuthServicesProps {
     const signUp = async (formData: FormData) => {
         try {
             const response = await axios.post(
-                "http://127.0.0.1:8000/api/sign-up/",
+                `${MAIN_URL}/sign-up/`,
                 formData,
                 { withCredentials: true }
             );

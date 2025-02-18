@@ -12,6 +12,7 @@ import useCrud from "../../hooks/useCrud";
 import { useEffect } from "react";
 import { Link } from "react-router";
 import { useTheme } from "@mui/material/styles";
+import { MEDIA_URL } from "../../api-config";
 
 interface Category {
     id: number;
@@ -79,7 +80,7 @@ const Categories = () => {
                                             }}
                                             src={
                                                 item.icon
-                                                    ? `http://127.0.0.1:8000${item.icon}`
+                                                    ? `${MEDIA_URL}${item.icon}`
                                                     : undefined
                                             }
                                         ></img>

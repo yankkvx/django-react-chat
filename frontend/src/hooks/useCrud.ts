@@ -1,5 +1,6 @@
 import { useState } from "react";
 import jwtHandler from "../utils/JwtHandler";
+import { MAIN_URL } from "../api-config";
 
 // Interface that defines the structure of the hooks return value
 interface CrudState<T> {
@@ -21,7 +22,7 @@ const useCrud = <T>(initialData: T[], apiURL: string): CrudState<T> => {
         setLoading(true);
         try {
             const response = await jwtAxiosHandler.get(
-                `http://127.0.0.1:8000/api/${apiURL}`
+                `${MAIN_URL}/${apiURL}`
             );
             const data = response.data;
 

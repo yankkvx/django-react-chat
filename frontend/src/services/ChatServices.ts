@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useAuthService } from "./AuthServices";
 import useCrud from "../hooks/useCrud";
 import { Server } from "../@types/server";
+import { WS_ROOT } from "../api-config";
 
 interface Message {
     sender: string;
@@ -19,7 +20,7 @@ const useChatService = (serverId?: string, channelId?: string) => {
         `messages/?channel_id=${channelId}`
     );
     const socketUrl = channelId
-        ? `ws://127.0.0.1:8000/${serverId}/${channelId}`
+        ? `${WS_ROOT}/${serverId}/${channelId}`
         : null;
     const [reconnectAttempt, setReconnectAttempt] = useState(0);
     const maxConnections = 5;

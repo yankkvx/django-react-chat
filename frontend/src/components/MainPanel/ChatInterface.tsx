@@ -4,6 +4,7 @@ import { Box, Typography } from "@mui/material";
 import ChannelInterface from "./ChannelInterface";
 import MessageTemplate from "./MessageTemplate";
 import useChatService from "../../services/ChatServices";
+import { MEDIA_URL } from "../../api-config";
 
 interface ServerChannelProps {
     data: Server[];
@@ -16,7 +17,7 @@ const ChatInterface = (props: ServerChannelProps) => {
     const serverDescription = data?.[0]?.description ?? "";
     const serverImage = data?.[0]?.image ?? "";
     const serverImageUrl = serverImage
-        ? `http://127.0.0.1:8000${serverImage}`
+        ? `${MEDIA_URL}${serverImage}`
         : "";
     const { newMessage, message, setMessage, sendJsonMessage } = useChatService(
         serverId,
