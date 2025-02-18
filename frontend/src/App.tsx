@@ -5,7 +5,6 @@ import ColorToggle from "./components/ColorToggle";
 import ServerScreen from "./screens/ServerScreen";
 import LoginScreen from "./screens/LoginScreen";
 import AuthServiceProvider from "./context/AuthContext";
-import TestLogin from "./screens/TestLogin";
 import ProtectedRoute from "./services/ProtectedRoutes";
 import SignUpScreen from "./screens/SignUpScreen";
 
@@ -29,14 +28,6 @@ const App = () => {
                             }
                         />
                         <Route path="/login" element={<LoginScreen />} />
-                        <Route
-                            path="/logintest"
-                            element={
-                                <ProtectedRoute>
-                                    <TestLogin />
-                                </ProtectedRoute>
-                            }
-                        />
                         <Route path="/sign-up" element={<SignUpScreen />} />
                     </Routes>
                 </ColorToggle>
