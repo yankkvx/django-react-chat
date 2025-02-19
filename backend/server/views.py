@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.response import Response
@@ -6,6 +5,9 @@ from django.db.models import Count
 from .models import Server, Category
 from .serializers import ServerSerializer, CategorySerializer
 from .schema import server_docs, category_docs
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import action
+from django.shortcuts import get_object_or_404
 
 
 class CategoryViewSet(viewsets.ViewSet):
@@ -18,7 +20,6 @@ class CategoryViewSet(viewsets.ViewSet):
             category_name = request.query_params.get('category_name')
             if category_name:
                 queryset = queryset.filter(name=category_name)
-            
 
         except Exception as e:
             return Response({'error: ': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -77,3 +78,52 @@ class ServerViewSet(viewsets.ViewSet):
         # Handle unexpected errors and return a 500 error response.
         except Exception as e:
             return Response({'error: ': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class MembershipViewSet(viewsets.ViewSet):
+    """
+    This viewset provides actions related to managing user membership in servers.
+    It includes functionality to check if a user is already a member of a server,
+    add a user to a server, and remove a user from a server
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    # Method to check if a user is already a member of a specific server
+    def _check_user_membership(self, server, user):
+        return server.member.filter(id=user.id).exists()
+
+    # Action to check if a user is a member of a server
+    @action(detail=False, methods=['GET'])
+    def is_member(self, request, server_id=None):
+        server = get_object_or_404(Server, pk=server_id)
+        user = request.user
+
+        is_member = server.member.filter(id=user.id).exists()
+        return Response({'is_member': is_member})
+
+    # Method for adding a user to a server
+    def create(self, request, server_id):
+        server = get_object_or_404(Server, id=server_id)
+        user = request.user
+
+        if self._check_user_membership(server, user):
+            return Response({'detail': 'User is already a member.'}, status=status.HTTP_409_CONFLICT)
+
+        server.member.add(user)
+        return Response({'detail': f'{user.username} joined to the server.'}, status=status.HTTP_200_OK)
+
+    # Action for removing a member from the server
+    @action(detail=False, methods=['DELETE'])
+    def remove_member(self, request, server_id):
+        server = get_object_or_404(Server, id=server_id)
+        user = request.user
+
+        if not self._check_user_membership(server, user):
+            return Response({'detail': 'User is not a member.'}, status=status.HTTP_404_NOT_FOUND)
+
+        if server.owner == user:
+            return Response({'detail': "Owners can't be removed"}, status=status.HTTP_409_CONFLICT)
+
+        server.member.remove(user)
+        return Response({'detail': f'{user.username} removed from the server.'}, status=status.HTTP_200_OK)
