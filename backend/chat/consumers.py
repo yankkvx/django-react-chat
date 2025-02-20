@@ -2,7 +2,7 @@ from channels.generic.websocket import JsonWebsocketConsumer
 from asgiref.sync import async_to_sync
 from .models import Communication, Message
 from django.contrib.auth import get_user_model
-
+from server.models import Server
 
 User = get_user_model()
 
@@ -24,9 +24,14 @@ class ChatConsumer(JsonWebsocketConsumer):
         self.accept()  # Accept WebSocket connection
         if not self.user.is_authenticated:
             self.close(code=4001)
+
         # Extract channel id form the URL
         self.channel_id = self.scope['url_route']['kwargs']['channelId']
-        # Set the user(currently hardcoded to user with ID 1 for testing)
+        self.server_id = self.scope['url_route']['kwargs']['serverId']
+
+        # Retrieve the Server object using the server_id and check if the user is a member of the server
+        server = Server.objects.get(id=self.server_id)
+        self.is_member = server.member.filter(id=self.user.id).exists()
 
         # Add WEbSocket connection to the group for real time communication
         async_to_sync(self.channel_layer.group_add)(
@@ -35,6 +40,11 @@ class ChatConsumer(JsonWebsocketConsumer):
         )
 
     def receive_json(self, text_data):
+        
+        # If the user is not a member of the server, dont process the message
+        if not self.is_member:
+            return 
+
         channel_id = self.channel_id  # Get the current channel id
         sender = self.user  # Get the sender user
         # Extract the message content from the data
