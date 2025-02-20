@@ -5,6 +5,7 @@ import ChannelInterface from "./ChannelInterface";
 import MessageTemplate from "./MessageTemplate";
 import useChatService from "../../services/ChatServices";
 import { MEDIA_URL } from "../../api-config";
+import MembershipButton from "../Membership/MembershipButton";
 
 interface ServerChannelProps {
     data: Server[];
@@ -16,9 +17,7 @@ const ChatInterface = (props: ServerChannelProps) => {
     const serverName = data?.[0]?.name ?? "Server";
     const serverDescription = data?.[0]?.description ?? "";
     const serverImage = data?.[0]?.image ?? "";
-    const serverImageUrl = serverImage
-        ? `${MEDIA_URL}${serverImage}`
-        : "";
+    const serverImageUrl = serverImage ? `${MEDIA_URL}${serverImage}` : "";
     const { newMessage, message, setMessage, sendJsonMessage } = useChatService(
         serverId,
         channelId
@@ -82,6 +81,9 @@ const ChatInterface = (props: ServerChannelProps) => {
                             </Typography>
                         </Typography>
                         <Typography>{serverDescription}</Typography>
+                        <Box sx={{ pt: 1 }}>
+                            <MembershipButton />
+                        </Box>
                     </Box>
                 </Box>
             ) : (

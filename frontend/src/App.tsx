@@ -7,6 +7,8 @@ import LoginScreen from "./screens/LoginScreen";
 import AuthServiceProvider from "./context/AuthContext";
 import ProtectedRoute from "./services/ProtectedRoutes";
 import SignUpScreen from "./screens/SignUpScreen";
+import MembershipServiceProvider from "./context/MembershipContext";
+import MembershipCheck from "./components/Membership/MembershipCheck";
 
 const App = () => {
     return (
@@ -23,7 +25,11 @@ const App = () => {
                             path="/server/:serverId/:channelId?"
                             element={
                                 <ProtectedRoute>
-                                    <ServerScreen />
+                                    <MembershipServiceProvider>
+                                        <MembershipCheck>
+                                            <ServerScreen />
+                                        </MembershipCheck>
+                                    </MembershipServiceProvider>
                                 </ProtectedRoute>
                             }
                         />
