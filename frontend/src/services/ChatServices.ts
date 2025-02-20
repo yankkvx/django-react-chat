@@ -9,6 +9,7 @@ interface Message {
     sender: string;
     content: string;
     timestamp: string;
+    profile_image: string;
 }
 
 const useChatService = (serverId?: string, channelId?: string) => {
