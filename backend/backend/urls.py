@@ -7,7 +7,7 @@ from rest_framework.routers import DefaultRouter
 from server.views import ServerViewSet, CategoryViewSet, MembershipViewSet
 from chat.consumers import ChatConsumer
 from chat.views import MessageViewSet
-from users.views import UserViewSet, ObtainJWTWithCookiesView, RefreshJWTWithCookiesView, Logout, RegisterUser
+from users.views import UserViewSet, ObtainJWTWithCookiesView, RefreshJWTWithCookiesView, Logout, RegisterUser, UserManagement
 
 
 router = DefaultRouter()
@@ -28,6 +28,7 @@ urlpatterns = [
          name='token_refresh'),
     path('api/logout/', Logout.as_view(), name='logout'),
     path('api/sign-up/', RegisterUser.as_view(), name='sign-up'),
+    path('api/users/profile/', UserManagement.as_view(), name='user-management')
 ] + router.urls
 
 websockets_urls = [

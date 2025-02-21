@@ -99,7 +99,7 @@ class Logout(APIView):
 class RegisterUser(SetJWTInCookiesMixin, APIView):
     """
     View to handle user registration
-    Accepts a POST request with the user data and profile image, 
+    Accepts a POST request with the user data and profile image,
     performs validation to ensure unique email and username,
     and creates a new user if all validations pass
     """
@@ -147,3 +147,74 @@ class RegisterUser(SetJWTInCookiesMixin, APIView):
 
         except Exception as e:
             return Response({'detail': 'An error occurred during registration.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class UserManagement(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request):
+        user = request.user
+        data = request.data
+        # Flag to check if a refresh of tokens is needed (when email or password changes)
+        refresh_needed = False
+
+        # Get the new email from the request, defaulting to the current users email
+        new_email = data.get('email', user.email)
+        # Get the raw password from the request, defaulting to an empty string
+        new_password_raw = data.get('password', '')
+
+        try:
+            # If a new email is provided and its different from the current email, update it
+            if new_email and new_email != user.email:
+                refresh_needed = True  # Mark for refresh as email is updated
+                user.email = new_email
+
+            # If a new password is provided check if its different from the current one
+            if new_password_raw:
+                # Only update the password if the new one doesn't match the current one
+                if not user.check_password(new_password_raw):
+                    refresh_needed = True  # Mark for refresh as password is updated
+                    user.password = make_password(new_password_raw)
+
+            # If the new username is different, update the users username
+            if data.get('username') != user.username:
+                user.username = data.get('username', user.username)
+            # If the new profile image is different, update the users profile image
+            if data.get('profile_image') != user.profile_image:
+                user.profile_image = data.get(
+                    'profile_image', user.profile_image)
+
+            user.save()
+
+            response = Response(
+                {'detail': 'Profile updated successfully'}, status=status.HTTP_200_OK
+            )
+
+            # If the email or password has changed, refresh the JWT tokens
+            if refresh_needed:
+                # Generate a new refresh token for the user
+                refresh = RefreshToken.for_user(user)
+                # Extract the new access token from the refresh token
+                access_token = str(refresh.access_token)
+
+                # Set the new access token in an HTTP-only cookie
+                response.set_cookie(
+                    key=settings.SIMPLE_JWT['ACCESS_TOKEN_NAME'],
+                    value=access_token,
+                    httponly=True,
+                    samesite=settings.SIMPLE_JWT["JWT_COOKIE_SAMESITE"],
+                )
+
+                # Set the new refresh token in an HTTP-only cookie
+                response.set_cookie(
+                    key=settings.SIMPLE_JWT['REFRESH_TOKEN_NAME'],
+                    value=str(refresh),
+                    httponly=True,
+                    samesite=settings.SIMPLE_JWT["JWT_COOKIE_SAMESITE"],
+                )
+
+            # Return the response with a success message
+            return response
+
+        except Exception as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
