@@ -58,21 +58,6 @@ class RefreshJWTWithCookiesView(SetJWTInCookiesMixin, TokenRefreshView):
     serializer_class = JWTCookieTokenRefreshSerializer
 
 
-class UserViewSet(viewsets.ViewSet):
-    """
-    Viewset for managing user details
-    Accessible only for authenticated users
-    """
-    queryset = User.objects.all()
-    permission_classes = [IsAuthenticated]
-
-    @user_docs
-    def list(self, request):
-        user = request.user
-        serializer = UserSerializer(user, many=False)
-        return Response(serializer.data)
-
-
 class Logout(APIView):
     """
     View to log out the user by deleting JWT cookies
@@ -150,7 +135,21 @@ class RegisterUser(SetJWTInCookiesMixin, APIView):
 
 
 class UserManagement(APIView):
+    """
+    View to handle user management operations
+    Its fetching the current user's data and updating 
+    the user's profile (including username, email, etc)
+    """
+
     permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            user = request.user
+            serializer = UserSerializer(user, many=False)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request):
         user = request.user
