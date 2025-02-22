@@ -17,33 +17,33 @@ export function useAuthService(): AuthServicesProps {
 
     const getUserDetails = async () => {
         try {
-            const userId = localStorage.getItem("user_id");
             const response = await axios.get(
-                `${MAIN_URL}/user/?user_id=${userId}`,
+                `${MAIN_URL}/users/user-management/`,
                 { withCredentials: true }
             );
             const userDetails = response.data;
-            localStorage.setItem("userDetails", JSON.stringify(userDetails));
             setIsAuthenticated(true);
             localStorage.setItem("isAuthenticated", "true");
+
+            return {
+                username: userDetails.username,
+                email: userDetails.email,
+                profile_image: userDetails.profile_image || null,
+            };
         } catch (err: any) {
             setIsAuthenticated(false);
-            localStorage.setItem("isAuthenticated", "false");
-            return err;
+            return Promise.reject(err);
         }
     };
 
     // Login function that send response to the backend and handles response
     const login = async (username: string, password: string) => {
         try {
-            const response = await axios.post(
+            await axios.post(
                 `${MAIN_URL}/token/`,
                 { username, password },
                 { withCredentials: true }
             );
-            const user_id = response.data.user_id;
-            localStorage.setItem("isAuthenticated", "true");
-            localStorage.setItem("user_id", user_id);
             setIsAuthenticated(true);
             await getUserDetails();
 
@@ -56,7 +56,7 @@ export function useAuthService(): AuthServicesProps {
             }
         } catch (err: any) {
             setIsAuthenticated(false);
-            localStorage.setItem("isAuthenticated", "false");
+
             return err.response.status;
         }
     };
@@ -75,7 +75,6 @@ export function useAuthService(): AuthServicesProps {
 
     const logout = async () => {
         localStorage.clear();
-        localStorage.setItem("isAuthenticated", "false");
         setIsAuthenticated(false);
         try {
             await axios.post(`${MAIN_URL}/logout/`);
@@ -87,14 +86,12 @@ export function useAuthService(): AuthServicesProps {
 
     const signUp = async (formData: FormData) => {
         try {
-            const response = await axios.post(
+            await axios.post(
                 `${MAIN_URL}/sign-up/`,
                 formData,
                 { withCredentials: true }
             );
-            const user_id = response.data.user_id;
-            localStorage.setItem("isAuthenticated", "true");
-            localStorage.setItem("user_id", user_id);
+
             setIsAuthenticated(true);
             await getUserDetails();
             const redirectPath = sessionStorage.getItem("redirectPath");
@@ -106,10 +103,30 @@ export function useAuthService(): AuthServicesProps {
             }
         } catch (err: any) {
             setIsAuthenticated(false);
-            localStorage.setItem("isAuthenticated", "false");
+
             return err.response.status;
         }
     };
 
-    return { login, isAuthenticated, logout, refreshAccessToken, signUp };
+    const editUser = async (formData: FormData) => {
+        try {
+            await axios.put(`${MAIN_URL}/users/user-management/`, formData, {
+                withCredentials: true,
+            });
+            getUserDetails();
+            setIsAuthenticated(true);
+        } catch (err: any) {
+            return err.response.status;
+        }
+    };
+
+    return {
+        login,
+        isAuthenticated,
+        logout,
+        refreshAccessToken,
+        signUp,
+        editUser,
+        getUserDetails
+    };
 }

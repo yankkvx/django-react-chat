@@ -7,6 +7,7 @@ import LoginScreen from "./screens/LoginScreen";
 import AuthServiceProvider from "./context/AuthContext";
 import ProtectedRoute from "./services/ProtectedRoutes";
 import SignUpScreen from "./screens/SignUpScreen";
+import EditProfileScreen from "./screens/EditProfileScreen";
 import MembershipServiceProvider from "./context/MembershipContext";
 import MembershipCheck from "./components/Membership/MembershipCheck";
 
@@ -35,6 +36,14 @@ const App = () => {
                         />
                         <Route path="/login" element={<LoginScreen />} />
                         <Route path="/sign-up" element={<SignUpScreen />} />
+                        <Route
+                            path="/edit-profile"
+                            element={
+                                <ProtectedRoute>
+                                    <EditProfileScreen />
+                                </ProtectedRoute>
+                            }
+                        />
                     </Routes>
                 </ColorToggle>
             </AuthServiceProvider>
