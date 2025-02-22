@@ -8,21 +8,25 @@ import {
     IconButton,
     MenuItem,
     Menu,
+    Avatar,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Categories from "./RightPanel/Categories";
 import ColorModeToggle from "./ColorModeToggle";
 import PersonIcon from "@mui/icons-material/Person";
 import { Link as LinkRouter } from "react-router";
 import { useAuthService } from "../services/AuthServices";
+import { MEDIA_URL } from "../api-config";
 
 const Header = () => {
     const theme = useTheme();
     // State to control the sidevar visibility.
     const [sideBar, setSideBar] = useState(false);
-    const { isAuthenticated, logout } = useAuthService();
+    const { isAuthenticated, logout, getUserDetails } = useAuthService();
+    const [profileImage, setProfileImage] = useState<string | null>(null);
+    const [username, setUsername] = useState<string | null>(null);
     const toggleButton = () => setSideBar((prevState) => !prevState);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -48,6 +52,15 @@ const Header = () => {
         logout();
         setAnchorEl(null);
     };
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            getUserDetails().then((userDetails) => {
+                setProfileImage(userDetails.profile_image || null);
+                setUsername(userDetails.username);
+            });
+        }
+    }, [isAuthenticated, getUserDetails]);
 
     return (
         <AppBar
@@ -106,14 +119,33 @@ const Header = () => {
                     {isAuthenticated ? (
                         <>
                             <IconButton onClick={handleMenuClick}>
-                                <PersonIcon />
+                                {profileImage ? (
+                                    <Avatar
+                                        src={`${MEDIA_URL}${profileImage}`}
+                                        sx={{ width: 30, height: 30 }}
+                                    />
+                                ) : (
+                                    <Avatar sx={{ width: 30, height: 30 }}>
+                                        {username?.charAt(0)}
+                                    </Avatar>
+                                )}
                             </IconButton>
                             <Menu
                                 anchorEl={anchorEl}
                                 open={Boolean(anchorEl)}
                                 onClose={handleCloseMenu}
-
                             >
+                                <MenuItem
+                                    component={LinkRouter}
+                                    to="/edit-profile"
+                                    sx={{
+                                        fontSize: "0.875rem",
+                                        padding: "1px 10px",
+                                    }}
+                                >
+                                    Profile
+                                </MenuItem>
+
                                 <MenuItem
                                     onClick={handleLogout}
                                     sx={{
