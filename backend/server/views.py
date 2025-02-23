@@ -8,6 +8,7 @@ from .schema import server_docs, category_docs
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from django.shortcuts import get_object_or_404
+from rest_framework.views import APIView
 
 
 class CategoryViewSet(viewsets.ViewSet):
@@ -127,3 +128,11 @@ class MembershipViewSet(viewsets.ViewSet):
 
         server.member.remove(user)
         return Response({'detail': f'{user.username} removed from the server.'}, status=status.HTTP_200_OK)
+
+
+class UserServers(APIView):
+    def get(self, request):
+        user = request.user
+        servers = Server.objects.filter(member=user)
+        serializer = ServerSerializer(servers, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
