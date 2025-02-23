@@ -8,18 +8,28 @@ import {
     Paper,
     Snackbar,
     Alert,
+    Table,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TableCell,
+    TableBody,
 } from "@mui/material";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { useAuthServiceContext } from "../context/AuthContext";
 import Header from "../components/Header";
-import axios from "axios";
-import { MAIN_URL, MEDIA_URL } from "../api-config";
+import { MEDIA_URL } from "../api-config";
+import useMembershipService from "../services/MembershipService";
+import { Server } from "../@types/server";
+import { Link } from "react-router";
 
 const EditProfileScreen = () => {
     const { editUser, getUserDetails } = useAuthServiceContext();
+    const { getUserServers, leaveServer } = useMembershipService();
     const [preview, setPreview] = useState<string | null>(null);
-    const [successMessage, setSuccessMessage] = useState(false)
+    const [successMessage, setSuccessMessage] = useState(false);
+    const [userServers, setUserServers] = useState<Server[]>([]);
 
     const formik = useFormik({
         initialValues: {
@@ -36,14 +46,14 @@ const EditProfileScreen = () => {
             formData.append("password", password);
             if (profile_image) formData.append("profile_image", profile_image);
             await editUser(formData);
-            setSuccessMessage(true)
+            setSuccessMessage(true);
         },
     });
 
     useEffect(() => {
-        const loadUserData = async() => {
+        const loadUserData = async () => {
             try {
-                const userData = await getUserDetails()
+                const userData = await getUserDetails();
                 formik.setValues({
                     username: userData.username,
                     email: userData.email,
@@ -53,14 +63,17 @@ const EditProfileScreen = () => {
                 if (userData.profile_image) {
                     setPreview(`${MEDIA_URL}${userData.profile_image}`);
                 } else {
-                    setPreview(null)
+                    setPreview(null);
                 }
+
+                const servers = await getUserServers();
+                setUserServers(servers);
             } catch (error) {
                 console.error(error);
             }
-        }
+        };
         loadUserData();
-    }, [getUserDetails]);
+    }, [getUserDetails, getUserServers]);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
@@ -71,6 +84,17 @@ const EditProfileScreen = () => {
                 setPreview(reader.result as string);
             };
             reader.readAsDataURL(file);
+        }
+    };
+
+    const handleLeaveServer = async (serverId: number) => {
+        try {
+            await leaveServer(serverId);
+            setUserServers(
+                userServers.filter((server) => server.id !== serverId)
+            );
+        } catch (error) {
+            throw error;
         }
     };
 
@@ -194,14 +218,102 @@ const EditProfileScreen = () => {
                         </Paper>
                     </Grid>
                     <Grid item xs={12} md={7}>
-                        <Paper elevation={3} sx={{ p: 3}}>
+                        <Paper elevation={3} sx={{ p: 3 }}>
                             <Typography variant="h6">User servers</Typography>
+                            <TableContainer>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell
+                                                sx={{
+                                                    width: "10%",
+                                                    fontWeight: "bold",
+                                                }}
+                                            >
+                                                №
+                                            </TableCell>
+                                            <TableCell
+                                                sx={{
+                                                    width: "80%",
+                                                    fontWeight: "bold",
+                                                }}
+                                            >
+                                                Server Name
+                                            </TableCell>
+                                            <TableCell
+                                                sx={{
+                                                    textAlign: "center",
+                                                    fontWeight: "bold",
+                                                }}
+                                            >
+                                                Action
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {userServers.length > 0 ? (
+                                            userServers.map((server, i) => (
+                                                <TableRow key={server.id}>
+                                                    <TableCell>
+                                                        {i + 1}
+                                                    </TableCell>
+                                                    <TableCell
+                                                        component="th"
+                                                        scope="row"
+                                                    >
+                                                        <Link
+                                                            to={`/server/${server.id}`}
+                                                            style={{
+                                                                color: "inherit",
+                                                                textDecoration:
+                                                                    "underline ",
+                                                            }}
+                                                        >
+                                                            {server.name}
+                                                        </Link>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Button
+                                                            variant="outlined"
+                                                            color="error"
+                                                            onClick={() =>
+                                                                handleLeaveServer(
+                                                                    server.id
+                                                                )
+                                                            }
+                                                        >
+                                                            Leave
+                                                        </Button>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))
+                                        ) : (
+                                            <TableRow>
+                                                <TableCell
+                                                    colSpan={3}
+                                                    sx={{ textAlign: "center" }}
+                                                >
+                                                    No servers found
+                                                </TableCell>
+                                            </TableRow>
+                                        )}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
                         </Paper>
                     </Grid>
                 </Grid>
             </Container>
-            <Snackbar open={successMessage} autoHideDuration={3000} onClose={() => setSuccessMessage(false)}>
-                <Alert onClose={() => setSuccessMessage(false)} severity="success" sx={{width: '100%'}}>
+            <Snackbar
+                open={successMessage}
+                autoHideDuration={3000}
+                onClose={() => setSuccessMessage(false)}
+            >
+                <Alert
+                    onClose={() => setSuccessMessage(false)}
+                    severity="success"
+                    sx={{ width: "100%" }}
+                >
                     Profile updated successfully!
                 </Alert>
             </Snackbar>
