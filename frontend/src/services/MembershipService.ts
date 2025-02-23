@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import jwtHandler from "../utils/JwtHandler";
 import { MAIN_URL } from "../api-config";
+import { Server } from "../@types/server";
 
 interface UseServer {
     joinServer: (serverId: number) => Promise<void>;
@@ -9,6 +10,7 @@ interface UseServer {
     isUserMember: boolean;
     error: Error | null;
     isLoading: boolean;
+    getUserServers: () => Promise<Server[]>;
 }
 
 const useMembershipService = (): UseServer => {
@@ -66,6 +68,17 @@ const useMembershipService = (): UseServer => {
         }
     };
 
+    const getUserServers = useCallback(async (): Promise<Server[]> => {
+        try {
+            const response = await jwtAxios.get(`${MAIN_URL}/servers/user/`, {
+                withCredentials: true,
+            });
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    }, []);
+
     return {
         joinServer,
         leaveServer,
@@ -73,6 +86,7 @@ const useMembershipService = (): UseServer => {
         isUserMember,
         error,
         isLoading,
+        getUserServers,
     };
 };
 
