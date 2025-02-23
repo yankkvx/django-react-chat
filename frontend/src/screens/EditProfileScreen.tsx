@@ -220,21 +220,31 @@ const EditProfileScreen = () => {
                     <Grid item xs={12} md={7}>
                         <Paper elevation={3} sx={{ p: 3 }}>
                             <Typography variant="h6">User servers</Typography>
-                            <TableContainer>
+                            <TableContainer >
                                 <Table>
                                     <TableHead>
                                         <TableRow>
                                             <TableCell
                                                 sx={{
-                                                    width: "10%",
+                                                    width: "5%",
                                                     fontWeight: "bold",
+                                                    textAlign: 'center',
                                                 }}
                                             >
                                                 №
                                             </TableCell>
                                             <TableCell
                                                 sx={{
-                                                    width: "80%",
+                                                    fontWeight: "bold",
+                                                    textAlign: "center",
+                                                    width: "15%",
+                                                }}
+                                            >
+                                                Image
+                                            </TableCell>
+                                            <TableCell
+                                                sx={{
+                                                    width: "65%",
                                                     fontWeight: "bold",
                                                 }}
                                             >
@@ -244,6 +254,7 @@ const EditProfileScreen = () => {
                                                 sx={{
                                                     textAlign: "center",
                                                     fontWeight: "bold",
+                                                    width: "15%",
                                                 }}
                                             >
                                                 Action
@@ -253,9 +264,39 @@ const EditProfileScreen = () => {
                                     <TableBody>
                                         {userServers.length > 0 ? (
                                             userServers.map((server, i) => (
-                                                <TableRow key={server.id}>
-                                                    <TableCell>
+                                                <TableRow
+                                                    key={server.id}
+                                                    sx={{
+                                                        "&:hover": {
+                                                            backgroundColor:
+                                                                "action.hover",
+                                                        },
+                                                    }}
+                                                >
+                                                    <TableCell align="center">
                                                         {i + 1}
+                                                    </TableCell>
+                                                    <TableCell align="center">
+                                                        {server.image ? (
+                                                            <img
+                                                                src={`${MEDIA_URL}${server.image}`}
+                                                                alt={
+                                                                    server.name
+                                                                }
+                                                                style={{
+                                                                    width: 50,
+                                                                    height: 50,
+                                                                    objectFit:
+                                                                        "cover",
+                                                                    borderRadius:
+                                                                        "50%",
+                                                                }}
+                                                            />
+                                                        ) : (
+                                                            <Typography variant="caption">
+                                                                No image
+                                                            </Typography>
+                                                        )}
                                                     </TableCell>
                                                     <TableCell
                                                         component="th"
