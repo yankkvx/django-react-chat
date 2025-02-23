@@ -1,6 +1,6 @@
 import axios from "axios";
 import { AuthServicesProps } from "../@types/authService";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useNavigate } from "react-router";
 import { MAIN_URL } from "../api-config";
 
@@ -15,7 +15,7 @@ export function useAuthService(): AuthServicesProps {
         getAuthenticatedValue
     );
 
-    const getUserDetails = async () => {
+    const getUserDetails = useCallback(async () => {
         try {
             const response = await axios.get(
                 `${MAIN_URL}/users/user-management/`,
@@ -34,7 +34,7 @@ export function useAuthService(): AuthServicesProps {
             setIsAuthenticated(false);
             return Promise.reject(err);
         }
-    };
+    }, []);
 
     // Login function that send response to the backend and handles response
     const login = async (username: string, password: string) => {
@@ -86,11 +86,9 @@ export function useAuthService(): AuthServicesProps {
 
     const signUp = async (formData: FormData) => {
         try {
-            await axios.post(
-                `${MAIN_URL}/sign-up/`,
-                formData,
-                { withCredentials: true }
-            );
+            await axios.post(`${MAIN_URL}/sign-up/`, formData, {
+                withCredentials: true,
+            });
 
             setIsAuthenticated(true);
             await getUserDetails();
@@ -127,6 +125,6 @@ export function useAuthService(): AuthServicesProps {
         refreshAccessToken,
         signUp,
         editUser,
-        getUserDetails
+        getUserDetails,
     };
 }
