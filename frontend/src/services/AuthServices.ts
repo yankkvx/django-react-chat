@@ -26,6 +26,7 @@ export function useAuthService(): AuthServicesProps {
             localStorage.setItem("isAuthenticated", "true");
 
             return {
+                id: userDetails.id,
                 username: userDetails.username,
                 email: userDetails.email,
                 profile_image: userDetails.profile_image || null,
