@@ -9,6 +9,7 @@ FlowTalk is a web-based chat application that allows users to communicate in rea
 - **Real-time Messaging:** Instant message exchange using WebSockets.
 - **User Authentication:** Secure sign-up and login with JWT authentication.
 - **Profile Editing:** Users can edit their profile information (such as username, email, and profile picture).
+- **Server Management:** Users can delete servers they own or leave servers directly from their profile.
 - **Message History:** Persistent chat history for each room.
 - **Light & Dark Mode:** Users can switch between light and dark themes.
 - **Responsive Design:** Fully optimized for mobile and desktop devices.
@@ -18,6 +19,7 @@ FlowTalk is a web-based chat application that allows users to communicate in rea
 Currently implemented features:
 - User registration and login
 - User profile editing
+- Server management (Join/Leave/Delete)
 - Real-time chat functionality
 - Light and dark theme support
 - Responsive design
