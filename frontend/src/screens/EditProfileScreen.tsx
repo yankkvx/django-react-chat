@@ -26,10 +26,12 @@ import { Link } from "react-router";
 
 const EditProfileScreen = () => {
     const { editUser, getUserDetails } = useAuthServiceContext();
-    const { getUserServers, leaveServer } = useMembershipService();
+    const { getUserServers, leaveServer, deleteUserServer } =
+        useMembershipService();
     const [preview, setPreview] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState(false);
     const [userServers, setUserServers] = useState<Server[]>([]);
+    const [userId, setUserId] = useState<number | null>(null);
 
     const formik = useFormik({
         initialValues: {
@@ -54,6 +56,7 @@ const EditProfileScreen = () => {
         const loadUserData = async () => {
             try {
                 const userData = await getUserDetails();
+                setUserId(userData.id);
                 formik.setValues({
                     username: userData.username,
                     email: userData.email,
@@ -67,7 +70,16 @@ const EditProfileScreen = () => {
                 }
 
                 const servers = await getUserServers();
-                setUserServers(servers);
+                const sortedServes = servers.sort((a, b) => {
+                    const aIsOwner = a.owner == userData.id;
+                    const bIsOwner = b.owner == userData.id;
+
+                    if (aIsOwner && !bIsOwner) return -1;
+                    if (!aIsOwner && bIsOwner) return 1;
+                    return 0;
+                });
+
+                setUserServers(sortedServes);
             } catch (error) {
                 console.error(error);
             }
@@ -88,8 +100,27 @@ const EditProfileScreen = () => {
     };
 
     const handleLeaveServer = async (serverId: number) => {
+        const isConfirmed = window.confirm(
+            "Are you sure you want to leave the server?"
+        );
+        if (!isConfirmed) return;
         try {
             await leaveServer(serverId);
+            setUserServers(
+                userServers.filter((server) => server.id !== serverId)
+            );
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    const handleDeleteServer = async (serverId: number) => {
+        const isConfirmed = window.confirm(
+            "Are you sure you want to delete the server?"
+        );
+        if (!isConfirmed) return;
+        try {
+            await deleteUserServer(serverId);
             setUserServers(
                 userServers.filter((server) => server.id !== serverId)
             );
@@ -220,7 +251,7 @@ const EditProfileScreen = () => {
                     <Grid item xs={12} md={7}>
                         <Paper elevation={3} sx={{ p: 3 }}>
                             <Typography variant="h6">User servers</Typography>
-                            <TableContainer >
+                            <TableContainer>
                                 <Table>
                                     <TableHead>
                                         <TableRow>
@@ -228,7 +259,7 @@ const EditProfileScreen = () => {
                                                 sx={{
                                                     width: "5%",
                                                     fontWeight: "bold",
-                                                    textAlign: 'center',
+                                                    textAlign: "center",
                                                 }}
                                             >
                                                 №
@@ -244,11 +275,19 @@ const EditProfileScreen = () => {
                                             </TableCell>
                                             <TableCell
                                                 sx={{
-                                                    width: "65%",
+                                                    width: "60%",
                                                     fontWeight: "bold",
                                                 }}
                                             >
                                                 Server Name
+                                            </TableCell>
+                                            <TableCell
+                                                sx={{
+                                                    width: "5",
+                                                    fontWeight: "bold",
+                                                }}
+                                            >
+                                                Status
                                             </TableCell>
                                             <TableCell
                                                 sx={{
@@ -313,18 +352,38 @@ const EditProfileScreen = () => {
                                                             {server.name}
                                                         </Link>
                                                     </TableCell>
+                                                    <TableCell align="center">
+                                                        {server.owner === userId
+                                                            ? "Owner"
+                                                            : "Member"}
+                                                    </TableCell>
                                                     <TableCell>
-                                                        <Button
-                                                            variant="outlined"
-                                                            color="error"
-                                                            onClick={() =>
-                                                                handleLeaveServer(
-                                                                    server.id
-                                                                )
-                                                            }
-                                                        >
-                                                            Leave
-                                                        </Button>
+                                                        {server.owner ===
+                                                        userId ? (
+                                                            <Button
+                                                                variant="outlined"
+                                                                color="error"
+                                                                onClick={() =>
+                                                                    handleDeleteServer(
+                                                                        server.id
+                                                                    )
+                                                                }
+                                                            >
+                                                                Delete
+                                                            </Button>
+                                                        ) : (
+                                                            <Button
+                                                                variant="outlined"
+                                                                color="error"
+                                                                onClick={() =>
+                                                                    handleLeaveServer(
+                                                                        server.id
+                                                                    )
+                                                                }
+                                                            >
+                                                                Leave
+                                                            </Button>
+                                                        )}
                                                     </TableCell>
                                                 </TableRow>
                                             ))
