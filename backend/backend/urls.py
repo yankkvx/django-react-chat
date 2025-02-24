@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework.routers import DefaultRouter
-from server.views import ServerViewSet, CategoryViewSet, MembershipViewSet, UserServers
+from server.views import ServerViewSet, CategoryViewSet, MembershipViewSet, UserServers, ServerManagement
 from chat.consumers import ChatConsumer
 from chat.views import MessageViewSet
 from users.views import ObtainJWTWithCookiesView, RefreshJWTWithCookiesView, Logout, RegisterUser, UserManagement
@@ -30,6 +30,8 @@ urlpatterns = [
     path('api/users/user-management/',
          UserManagement.as_view(), name='user-management'),
     path('api/servers/user/', UserServers.as_view(), name='user-servers'),
+    path('api/servers/<str:pk>/delete/',
+         ServerManagement.as_view(), name='server-delete')
 ] + router.urls
 
 websockets_urls = [

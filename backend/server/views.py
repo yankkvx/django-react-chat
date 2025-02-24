@@ -136,3 +136,20 @@ class UserServers(APIView):
         servers = Server.objects.filter(member=user)
         serializer = ServerSerializer(servers, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ServerManagement(APIView):
+    """
+    This view handles server management operations.
+    It ensures that only the owner of the server can perform actions on it.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, pk):
+        try:
+            user = request.user
+            server = Server.objects.get(id=pk, owner=user)
+            server.delete()
+            return Response({'detail': 'Server was successfully deleted.'}, status=status.HTTP_200_OK)
+        except Server.DoesNotExist:
+            return Response({'detail': "Can't find server with that id"}, status=status.HTTP_404_NOT_FOUND)
