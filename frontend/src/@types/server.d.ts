@@ -5,6 +5,8 @@ export interface Server {
     description: string;
     image: string;
     category: string;
+    owner: number;
+    member: number[];
     server_channel: {
         id: number;
         name: string;

@@ -11,6 +11,7 @@ interface UseServer {
     error: Error | null;
     isLoading: boolean;
     getUserServers: () => Promise<Server[]>;
+    deleteUserServer: (serveId: number) => Promise<void>;
 }
 
 const useMembershipService = (): UseServer => {
@@ -79,6 +80,18 @@ const useMembershipService = (): UseServer => {
         }
     }, []);
 
+    const deleteUserServer = async (serveId: number): Promise<any> => {
+        try {
+            const response = await jwtAxios.delete(
+                `${MAIN_URL}/servers/${serveId}/delete/`,
+                { withCredentials: true }
+            );
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    };
+
     return {
         joinServer,
         leaveServer,
@@ -87,6 +100,7 @@ const useMembershipService = (): UseServer => {
         error,
         isLoading,
         getUserServers,
+        deleteUserServer,
     };
 };
 
