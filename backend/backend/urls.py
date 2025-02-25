@@ -4,11 +4,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework.routers import DefaultRouter
-from server.views import ServerViewSet, CategoryViewSet, MembershipViewSet, UserServers, ServerManagement
+from server.views import ServerViewSet, CategoryViewSet, MembershipViewSet, UserServers, ServerManagement, CategoryCreation, ChannelManagement
 from chat.consumers import ChatConsumer
 from chat.views import MessageViewSet
 from users.views import ObtainJWTWithCookiesView, RefreshJWTWithCookiesView, Logout, RegisterUser, UserManagement
-
 
 router = DefaultRouter()
 router.register('api/server/select', ServerViewSet)
@@ -31,7 +30,11 @@ urlpatterns = [
          UserManagement.as_view(), name='user-management'),
     path('api/servers/user/', UserServers.as_view(), name='user-servers'),
     path('api/servers/<str:pk>/delete/',
-         ServerManagement.as_view(), name='server-delete')
+         ServerManagement.as_view(), name='server-delete'),
+    path('api/servers/management/',
+         ServerManagement.as_view(), name='server-management'),
+    path('api/servers/category/', CategoryCreation.as_view(), name='category-management'),
+    path('api/servers/channel/', ChannelManagement.as_view(), name='create-channel'),
 ] + router.urls
 
 websockets_urls = [

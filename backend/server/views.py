@@ -2,8 +2,8 @@ from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.response import Response
 from django.db.models import Count
-from .models import Server, Category
-from .serializers import ServerSerializer, CategorySerializer
+from .models import Server, Category, Channel
+from .serializers import ServerSerializer, CategorySerializer, ChannelSerializer
 from .schema import server_docs, category_docs
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
@@ -39,6 +39,9 @@ class ServerViewSet(viewsets.ViewSet):
     def list(self, request):
         try:
             queryset = self.queryset
+
+            queryset = queryset.distinct()
+
 
             # Filter by category name if 'category' parameter is provided.
             category = request.query_params.get('category')
@@ -138,12 +141,66 @@ class UserServers(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class CategoryCreation(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        categories = Category.objects.all()
+        serializer = CategorySerializer(categories, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+    def post(self, request):
+        data = request.data
+        name = data.get('name')
+        description = data.get('description')
+        icon = data.get('icon', None)
+
+        try:
+            category = Category.objects.create(
+                name=name,
+                description=description,
+                icon=icon,
+            )
+        except Exception as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = CategorySerializer(category)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
 class ServerManagement(APIView):
     """
     This view handles server management operations.
     It ensures that only the owner of the server can perform actions on it.
     """
     permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        data = request.data
+        name = data.get('name')
+        category_id = data.get('category')
+        description = data.get('description')
+        image = data.get('image')
+
+        category = get_object_or_404(Category, id=category_id)
+
+        try:
+            server = Server.objects.create(
+                name=name,
+                owner=user,
+                category=category,
+                description=description,
+                image=image
+            )
+            server.member.add(user)
+        except Exception as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = ServerSerializer(server)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def delete(self, request, pk):
         try:
@@ -153,3 +210,23 @@ class ServerManagement(APIView):
             return Response({'detail': 'Server was successfully deleted.'}, status=status.HTTP_200_OK)
         except Server.DoesNotExist:
             return Response({'detail': "Can't find server with that id"}, status=status.HTTP_404_NOT_FOUND)
+
+
+class ChannelManagement(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        data = request.data
+
+        name = data.get('name')
+        topic = data.get('topic')
+        server_id = data.get('server')
+        server = Server.objects.get(id=server_id)
+        try:
+            channel = Channel.objects.create(
+                name=name, topic=topic, server=server)
+        except Exception as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = ChannelSerializer(channel)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
