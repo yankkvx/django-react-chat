@@ -3,7 +3,7 @@ export interface Server {
     name: string;
     server: string;
     description: string;
-    image: string;
+    image: string | File;
     category: string;
     owner: number;
     member: number[];
