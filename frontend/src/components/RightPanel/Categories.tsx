@@ -25,7 +25,7 @@ const Categories = () => {
     const theme = useTheme();
     const { dataResponse, fetchData } = useCrud<Category>(
         [],
-        "server/category"
+        "servers/category/"
     );
 
     useEffect(() => {
