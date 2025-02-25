@@ -10,6 +10,7 @@ import SignUpScreen from "./screens/SignUpScreen";
 import EditProfileScreen from "./screens/EditProfileScreen";
 import MembershipServiceProvider from "./context/MembershipContext";
 import MembershipCheck from "./components/Membership/MembershipCheck";
+import CreateServerScreen from "./screens/CreateServerScreen";
 
 const App = () => {
     return (
@@ -41,6 +42,14 @@ const App = () => {
                             element={
                                 <ProtectedRoute>
                                     <EditProfileScreen />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/create-server"
+                            element={
+                                <ProtectedRoute>
+                                    {<CreateServerScreen />}
                                 </ProtectedRoute>
                             }
                         />
