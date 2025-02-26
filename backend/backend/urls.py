@@ -29,11 +29,16 @@ urlpatterns = [
     path('api/users/user-management/',
          UserManagement.as_view(), name='user-management'),
     path('api/servers/user/', UserServers.as_view(), name='user-servers'),
+    path('api/servers/<str:pk>/',
+         ServerManagement.as_view(), name='server-get'),
     path('api/servers/<str:pk>/delete/',
          ServerManagement.as_view(), name='server-delete'),
+    path('api/servers/<str:pk>/edit/',
+         ServerManagement.as_view(), name='server-edit'),
     path('api/servers/management/',
          ServerManagement.as_view(), name='server-management'),
-    path('api/servers/category/', CategoryCreation.as_view(), name='category-management'),
+    path('api/servers/category/', CategoryCreation.as_view(),
+         name='category-management'),
     path('api/servers/channel/', ChannelManagement.as_view(), name='create-channel'),
 ] + router.urls
 

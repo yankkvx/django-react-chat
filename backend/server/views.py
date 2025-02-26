@@ -42,7 +42,6 @@ class ServerViewSet(viewsets.ViewSet):
 
             queryset = queryset.distinct()
 
-
             # Filter by category name if 'category' parameter is provided.
             category = request.query_params.get('category')
             if category:
@@ -150,7 +149,6 @@ class CategoryCreation(APIView):
         serializer = CategorySerializer(categories, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
     def post(self, request):
         data = request.data
         name = data.get('name')
@@ -177,6 +175,11 @@ class ServerManagement(APIView):
     """
     permission_classes = [IsAuthenticated]
 
+    def get(self, request, pk):
+        server = get_object_or_404(Server, id=pk)
+        serializer = ServerSerializer(server, many=False)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     def post(self, request):
         user = request.user
         data = request.data
@@ -201,6 +204,22 @@ class ServerManagement(APIView):
 
         serializer = ServerSerializer(server)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def put(self, request, pk):
+        user = request.user
+        data = request.data
+        server = get_object_or_404(Server, id=pk, owner=user)
+        try:
+            server.name = data['name']
+            server.category = get_object_or_404(Category, id=data['category'])
+            server.description = data['description']
+            server.image = data['image']
+            server.save()
+
+            serializer = ServerSerializer(server, many=False)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):
         try:
