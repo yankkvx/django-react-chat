@@ -3,6 +3,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from django.db.models import Count
 from .models import Server, Category, Channel
+from users.models import User
 from .serializers import ServerSerializer, CategorySerializer, ChannelSerializer
 from .schema import server_docs, category_docs
 from rest_framework.permissions import IsAuthenticated
@@ -140,6 +141,21 @@ class UserServers(APIView):
         serializer = ServerSerializer(servers, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    def delete(self, request, server_id, user_id):
+        user = request.user
+        server = get_object_or_404(Server, id=server_id)
+
+        if server.owner != user:
+            raise PermissionDenied(
+                'You do not have permission to access this server.')
+
+        user_to_remove = get_object_or_404(User, id=user_id)
+        if user_to_remove not in server.member.all():
+            return Response({'detail': 'User is not a member of this server.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        server.member.remove(user_to_remove)
+        return Response({'detail': 'User has been removed from the server.'}, status=status.HTTP_200_OK)
+
 
 class CategoryCreation(APIView):
     permission_classes = [IsAuthenticated]
@@ -178,7 +194,7 @@ class ServerManagement(APIView):
     def get(self, request, pk):
         user = request.user
         server = get_object_or_404(Server, id=pk)
-        if server.owner != request.user:
+        if server.owner != user:
             raise PermissionDenied(
                 "You do not have permission to access this server.")
         serializer = ServerSerializer(server, many=False)
@@ -234,7 +250,7 @@ class ServerManagement(APIView):
     def delete(self, request, pk):
         try:
             user = request.user
-            server = Server.objects.get(id=pk, owner=user)
+            server = get_object_or_404(Server, id=pk, owner=user)
             if server.owner != user:
                 return Response({'detail': 'Only the server owner can delete this server.'}, status=status.HTTP_403_FORBIDDEN)
             server.delete()
@@ -253,7 +269,7 @@ class ChannelManagement(APIView):
         name = data.get('name')
         topic = data.get('topic')
         server_id = data.get('server')
-        server = Server.objects.get(id=server_id)
+        server = get_object_or_404(Server, id=server_id)
 
         if server.owner != user:
             return Response({'detail': 'Only the server owner can add channels.'}, status=status.HTTP_403_FORBIDDEN)

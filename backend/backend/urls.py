@@ -42,6 +42,8 @@ urlpatterns = [
          ServerManagement.as_view(), name='server-delete'),
     path('api/servers/<str:pk>/edit/',
          ServerManagement.as_view(), name='server-edit'),
+    path('api/servers/<str:server_id>/user/<str:user_id>/',
+         UserServers.as_view(), name='remove-user'),
 
 
 ] + router.urls
