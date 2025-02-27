@@ -15,6 +15,7 @@ import {
     TableCell,
     TableBody,
 } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { useAuthServiceContext } from "../context/AuthContext";
@@ -26,8 +27,7 @@ import { Link } from "react-router";
 
 const EditProfileScreen = () => {
     const { editUser, getUserDetails } = useAuthServiceContext();
-    const { getUserServers, leaveServer, deleteUserServer } =
-        useMembershipService();
+    const { getUserServers, leaveServer } = useMembershipService();
     const [preview, setPreview] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState(false);
     const [userServers, setUserServers] = useState<Server[]>([]);
@@ -106,21 +106,6 @@ const EditProfileScreen = () => {
         if (!isConfirmed) return;
         try {
             await leaveServer(serverId);
-            setUserServers(
-                userServers.filter((server) => server.id !== serverId)
-            );
-        } catch (error) {
-            throw error;
-        }
-    };
-
-    const handleDeleteServer = async (serverId: number) => {
-        const isConfirmed = window.confirm(
-            "Are you sure you want to delete the server?"
-        );
-        if (!isConfirmed) return;
-        try {
-            await deleteUserServer(serverId);
             setUserServers(
                 userServers.filter((server) => server.id !== serverId)
             );
@@ -250,7 +235,26 @@ const EditProfileScreen = () => {
                     </Grid>
                     <Grid item xs={12} md={7}>
                         <Paper elevation={3} sx={{ p: 3 }}>
-                            <Typography variant="h6">User servers</Typography>
+                            <Box display="flex" alignItems="center">
+                                <Typography variant="h6" flexGrow={1}>
+                                    User servers
+                                </Typography>
+                                <Link
+                                    to="/create-server"
+                                    style={{ color: "inherit" }}
+                                >
+                                    <AddIcon
+                                        sx={{
+                                            transition:
+                                                "transform 0.1s ease-in-out",
+                                            "&:hover": {
+                                                transform: "scale(1.2)",
+                                            },
+                                        }}
+                                    />
+                                </Link>
+                            </Box>
+
                             <TableContainer>
                                 <Table>
                                     <TableHead>
@@ -360,17 +364,16 @@ const EditProfileScreen = () => {
                                                     <TableCell>
                                                         {server.owner ===
                                                         userId ? (
-                                                            <Button
-                                                                variant="outlined"
-                                                                color="error"
-                                                                onClick={() =>
-                                                                    handleDeleteServer(
-                                                                        server.id
-                                                                    )
-                                                                }
+                                                            <Link
+                                                                to={`/server-management/${server.id}`}
                                                             >
-                                                                Delete
-                                                            </Button>
+                                                                <Button
+                                                                    variant="outlined"
+                                                                    color="primary"
+                                                                >
+                                                                    Edit
+                                                                </Button>
+                                                            </Link>
                                                         ) : (
                                                             <Button
                                                                 variant="outlined"
