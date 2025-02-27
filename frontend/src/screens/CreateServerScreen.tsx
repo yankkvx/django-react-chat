@@ -207,14 +207,18 @@ const CreateServerScreen = () => {
                                 gap: 2,
                             }}
                         >
-                            
                             <TextField
                                 fullWidth
                                 value={imageName}
                                 placeholder="No file chosen"
                                 InputProps={{ readOnly: true }}
                             />
-                            <Button variant="contained" component='label' size='small' sx={{ padding: "4px 8px", fontSize: "0.75rem" }}>
+                            <Button
+                                variant="contained"
+                                component="label"
+                                size="small"
+                                sx={{ padding: "4px 8px", fontSize: "0.75rem" }}
+                            >
                                 Upload Image
                                 <input
                                     type="file"
