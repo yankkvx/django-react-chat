@@ -102,6 +102,22 @@ const useServerService = () => {
         }
     };
 
+    const removeUserFromMembers = async (
+        serverId: number,
+        userIdToRemove: number
+    ) => {
+        try {
+            const response = await axios.delete(
+                `${MAIN_URL}/servers/${serverId}/user/${userIdToRemove}/`,
+                { withCredentials: true }
+            );
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    };
+
     return {
         getServer,
         createServer,
@@ -110,6 +126,7 @@ const useServerService = () => {
         createCategory,
         createChannel,
         deleteChannel,
+        removeUserFromMembers,
     };
 };
 
