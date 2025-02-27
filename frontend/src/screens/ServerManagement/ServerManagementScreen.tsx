@@ -2,6 +2,7 @@ import { Container, Grid, Typography } from "@mui/material";
 import ChannelsSection from "./ChannelsSection";
 import ServerSection from "./ServerSection";
 import Header from "../../components/Header";
+import ServerUserSection from "./ServerUserSection";
 
 const ServerManagementScreen = () => {
     return (
@@ -20,7 +21,9 @@ const ServerManagementScreen = () => {
                         <ServerSection />
                         <ChannelsSection />
                     </Grid>
-                    <Grid item xs={12} md={6}></Grid>
+                    <Grid item xs={12} md={6}>
+                        <ServerUserSection />
+                    </Grid>
                 </Grid>
             </Container>
         </>
