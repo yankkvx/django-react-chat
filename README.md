@@ -9,6 +9,7 @@ FlowTalk is a web-based chat application that allows users to communicate in rea
 - **Real-time Messaging:** Instant message exchange using WebSockets.
 - **User Authentication:** Secure sign-up and login with JWT authentication.
 - **Profile Editing:** Users can edit their profile information (such as username, email, and profile picture).
+- **Public Profiles:** Users have public profiles where they can showcase their avatar, username, email, registration date, and the servers they are a part of.
 - **Server Management:** Users can edit server details, delete servers they own, or leave servers they have joined.
 - **Moderation Tools:** Server owners can remove users from their servers, ensuring better control over community interactions.
 - **Create Server & Categories:** Users can create new servers and if no existing category matches their needs, they can create a new one.
@@ -21,7 +22,7 @@ FlowTalk is a web-based chat application that allows users to communicate in rea
 
 Currently implemented features:
 - User registration and login
-- User profile editing
+- User profile editing and public profiles
 - Server management (Join/Leave/Delete)
 - Server customization (Name, description, category, image)
 - Server & Categories creation
@@ -32,7 +33,7 @@ Currently implemented features:
 - Responsive design
 
 Upcoming features:
-- User profiles
+- Additional service code improvements and refinements
 
 ## Tech Stack
 
@@ -78,13 +79,13 @@ Upcoming features:
    ```sh
    python manage.py migrate
    ```
-7. Create a superuser for admin access and create few servers:
-   ```sh
-   python manage.py createsuperuser 
-   ```
-8. Start the uvicorn server:
+7. Start the uvicorn server:
    ```sh
    uvicorn backend.asgi:application --port 8000
+   ```
+8. Create a superuser for admin access(additional):
+   ```sh
+   python manage.py createsuperuser 
    ```
 
 ### Frontend Setup
