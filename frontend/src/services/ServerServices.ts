@@ -117,6 +117,16 @@ const useServerService = () => {
             throw error;
         }
     };
+    const getPublicProfile = useCallback( async (userId: number): Promise<any> => {
+        try {
+            const response = await axios.get(`${MAIN_URL}/users/${userId}/`, {
+                withCredentials: true,
+            });
+            return response;
+        } catch (err: any) {
+            return err.response.status;
+        }
+    },[]);
 
     return {
         getServer,
@@ -127,6 +137,7 @@ const useServerService = () => {
         createChannel,
         deleteChannel,
         removeUserFromMembers,
+        getPublicProfile,
     };
 };
 
