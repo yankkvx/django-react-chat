@@ -3,12 +3,15 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from .models import User
 from .serializers import UserSerializer, CustomTokenObtainPariSerializer, JWTCookieTokenRefreshSerializer, RegisterSerializer
+from server.serializers import ServerSerializer
 from .schema import user_docs, logout_docs, register_docs
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework.views import APIView
 from django.contrib.auth.hashers import make_password
+from django.shortcuts import get_object_or_404
+from server.models import Server
 # Create your views here.
 
 
@@ -217,3 +220,15 @@ class UserManagement(APIView):
 
         except Exception as e:
             return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PublicProfile(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, user_id):
+        user = get_object_or_404(User, id=user_id)
+        user_servers = Server.objects.filter(member=user)
+        user_data = UserSerializer(user).data
+        servers_data = ServerSerializer(user_servers, many=True).data
+        user_data["user_servers"] = servers_data
+        return Response(user_data, status=status.HTTP_200_OK)

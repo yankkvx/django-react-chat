@@ -7,7 +7,7 @@ from rest_framework.routers import DefaultRouter
 from server.views import ServerViewSet, CategoryViewSet, MembershipViewSet, UserServers, ServerManagement, CategoryCreation, ChannelManagement
 from chat.consumers import ChatConsumer
 from chat.views import MessageViewSet
-from users.views import ObtainJWTWithCookiesView, RefreshJWTWithCookiesView, Logout, RegisterUser, UserManagement
+from users.views import ObtainJWTWithCookiesView, RefreshJWTWithCookiesView, Logout, RegisterUser, UserManagement, PublicProfile
 
 router = DefaultRouter()
 router.register('api/server/select', ServerViewSet)
@@ -28,6 +28,8 @@ urlpatterns = [
     path('api/sign-up/', RegisterUser.as_view(), name='sign-up'),
     path('api/users/user-management/',
          UserManagement.as_view(), name='user-management'),
+    path('api/users/<str:user_id>/',
+         PublicProfile.as_view(), name='profile'),
     path('api/servers/user/', UserServers.as_view(), name='user-servers'),
     path('api/servers/category/', CategoryCreation.as_view(),
          name='category-management'),
@@ -44,6 +46,7 @@ urlpatterns = [
          ServerManagement.as_view(), name='server-edit'),
     path('api/servers/<str:server_id>/user/<str:user_id>/',
          UserServers.as_view(), name='remove-user'),
+
 
 
 ] + router.urls
