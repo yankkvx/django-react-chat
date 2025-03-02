@@ -46,7 +46,7 @@ const ProfileScreen: React.FC = () => {
             <Container maxWidth="md" sx={{ mt: 10, mb: 4 }}>
                 <Card sx={{ display: "flex", p: 2, mb: 4 }}>
                     <Avatar
-                        src={`${MEDIA_URL}/${profile?.profile_image}`}
+                        src={`${MEDIA_URL}${profile?.profile_image}`}
                         alt={profile?.username}
                         sx={{ width: 100, height: 100, mr: 2 }}
                     />
@@ -88,7 +88,7 @@ const ProfileScreen: React.FC = () => {
                                             <CardMedia
                                                 component="img"
                                                 height="140"
-                                                image={`${MEDIA_URL}/${server.image}`}
+                                                image={`${MEDIA_URL}${server.image}`}
                                                 alt={server.name}
                                             />
                                             <CardContent>
