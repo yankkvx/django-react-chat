@@ -97,104 +97,123 @@ const Servers = () => {
                     Recommended channels
                 </Typography>
             </Box>
-            <Grid container spacing={{ xs: 0, sm: 2 }}>
-                {dataResponse.map((item) => (
-                    <Grid item key={item.id} xs={12} sm={6} md={6} lg={3}>
-                        <Card
-                            sx={{
-                                heigh: "100%",
-                                display: "flex",
-                                flexDirection: "column",
-                                boxShadow: "none",
-                                backgroundImage: "none",
-                                borderRadius: 0,
-                                padding: 2,
-                            }}
-                        >
-                            <Link
-                                to={`/server/${item.id}`}
-                                style={{
-                                    textDecoration: "none",
-                                    color: "inherit",
+            <Box
+                sx={{
+                    pt: 3,
+                    maxHeight: "calc(100vh - 200px)",
+                    overflowY: "auto",
+                    paddingBottom: "10vh",
+                }}
+            >
+                <Grid container spacing={{ xs: 0, sm: 2 }}>
+                    {dataResponse.map((item) => (
+                        <Grid item key={item.id} xs={12} sm={6} md={6} lg={3}>
+                            <Card
+                                sx={{
+                                    heigh: "100%",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    boxShadow: "none",
+                                    backgroundImage: "none",
+                                    borderRadius: 0,
+                                    padding: 2,
                                 }}
                             >
-                                <CardMedia
-                                    component="img"
-                                    image={
-                                        item.image
-                                            ? `${MEDIA_URL}${item.image}`
-                                            : ""
-                                    }
-                                    alt={item.name}
-                                    sx={{
-                                        display: { xs: "none", sm: "block" },
-                                        aspectRatio: "16/9",
-                                        objectFit: "cover",
-                                        width: "100%",
-                                    }}
-                                />
-                                <CardContent
-                                    sx={{
-                                        flexGrow: 1,
-                                        p: 0,
-                                        "&:last-child": { paddingBottom: 0 },
+                                <Link
+                                    to={`/server/${item.id}`}
+                                    style={{
+                                        textDecoration: "none",
+                                        color: "inherit",
                                     }}
                                 >
-                                    <List>
-                                        <ListItem disablePadding>
-                                            <ListItemIcon sx={{ minWidth: 0 }}>
-                                                <ListItemAvatar
-                                                    sx={{ minWidth: "50px" }}
+                                    <CardMedia
+                                        component="img"
+                                        image={
+                                            item.image
+                                                ? `${MEDIA_URL}${item.image}`
+                                                : ""
+                                        }
+                                        alt={item.name}
+                                        sx={{
+                                            display: {
+                                                xs: "none",
+                                                sm: "block",
+                                            },
+                                            aspectRatio: "16/9",
+                                            objectFit: "cover",
+                                            width: "100%",
+                                        }}
+                                    />
+                                    <CardContent
+                                        sx={{
+                                            flexGrow: 1,
+                                            p: 0,
+                                            "&:last-child": {
+                                                paddingBottom: 0,
+                                            },
+                                        }}
+                                    >
+                                        <List>
+                                            <ListItem disablePadding>
+                                                <ListItemIcon
+                                                    sx={{ minWidth: 0 }}
                                                 >
-                                                    <Avatar
-                                                        alt="Server"
-                                                        src={
-                                                            item.image
-                                                                ? `${MEDIA_URL}${item.image}`
-                                                                : undefined
-                                                        }
-                                                    ></Avatar>
-                                                </ListItemAvatar>
-                                            </ListItemIcon>
-                                            <ListItemText
-                                                primary={
-                                                    <Typography
-                                                        variant="body2"
-                                                        textAlign="start"
+                                                    <ListItemAvatar
                                                         sx={{
-                                                            fontWeight: 700,
-                                                            textOverflow:
-                                                                "ellipsis",
-                                                            overflow: "hidden",
-                                                            whiteSpace:
-                                                                "nowrap",
-                                                            textTransform:
-                                                                "capitalize",
+                                                            minWidth: "50px",
                                                         }}
                                                     >
-                                                        {item.name}
-                                                    </Typography>
-                                                }
-                                                secondary={
-                                                    <Typography
-                                                        variant="body2"
-                                                        sx={{
-                                                            textTransform:
-                                                                "capitalize",
-                                                        }}
-                                                    >
-                                                        {item.category}
-                                                    </Typography>
-                                                }
-                                            />
-                                        </ListItem>
-                                    </List>
-                                </CardContent>
-                            </Link>
-                        </Card>
-                    </Grid>
-                ))}
-            </Grid>
+                                                        <Avatar
+                                                            alt="Server"
+                                                            src={
+                                                                item.image
+                                                                    ? `${MEDIA_URL}${item.image}`
+                                                                    : undefined
+                                                            }
+                                                        ></Avatar>
+                                                    </ListItemAvatar>
+                                                </ListItemIcon>
+                                                <ListItemText
+                                                    primary={
+                                                        <Typography
+                                                            variant="body2"
+                                                            textAlign="start"
+                                                            sx={{
+                                                                fontWeight: 700,
+                                                                textOverflow:
+                                                                    "ellipsis",
+                                                                overflow:
+                                                                    "hidden",
+                                                                whiteSpace:
+                                                                    "nowrap",
+                                                                textTransform:
+                                                                    "capitalize",
+                                                            }}
+                                                        >
+                                                            {item.name}
+                                                        </Typography>
+                                                    }
+                                                    secondary={
+                                                        <Typography
+                                                            variant="body2"
+                                                            sx={{
+                                                                textTransform:
+                                                                    "capitalize",
+                                                            }}
+                                                        >
+                                                            {item.category}
+                                                        </Typography>
+                                                    }
+                                                />
+                                            </ListItem>
+                                        </List>
+                                    </CardContent>
+                                </Link>
+                            </Card>
+                        </Grid>
+                    ))}
+                </Grid>
+            </Box>
         </Container>
     );
 };
