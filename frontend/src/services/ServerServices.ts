@@ -45,6 +45,19 @@ const useServerService = () => {
         }
     };
 
+    const deleteServer = async (serverId: number) => {
+        try {
+            const response = await axios.delete(
+                `${MAIN_URL}/servers/${serverId}/delete/`,
+                { withCredentials: true }
+            );
+            return response.data;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    };
+
     const getCategories = useCallback(async () => {
         try {
             const response = await axios.get(`${MAIN_URL}/servers/category/`, {
@@ -117,21 +130,28 @@ const useServerService = () => {
             throw error;
         }
     };
-    const getPublicProfile = useCallback( async (userId: number): Promise<any> => {
-        try {
-            const response = await axios.get(`${MAIN_URL}/users/${userId}/`, {
-                withCredentials: true,
-            });
-            return response;
-        } catch (err: any) {
-            return err.response.status;
-        }
-    },[]);
+    const getPublicProfile = useCallback(
+        async (userId: number): Promise<any> => {
+            try {
+                const response = await axios.get(
+                    `${MAIN_URL}/users/${userId}/`,
+                    {
+                        withCredentials: true,
+                    }
+                );
+                return response;
+            } catch (err: any) {
+                return err.response.status;
+            }
+        },
+        []
+    );
 
     return {
         getServer,
         createServer,
         editServer,
+        deleteServer,
         getCategories,
         createCategory,
         createChannel,

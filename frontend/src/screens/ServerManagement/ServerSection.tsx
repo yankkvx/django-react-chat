@@ -20,15 +20,20 @@ import {
 } from "@mui/material";
 import { useFormik } from "formik";
 import useServerService from "../../services/ServerServices";
-import { useNavigate } from "react-router";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 
 const ServerSection = () => {
     const { serverId: serverIdFromUrl } = useParams<{ serverId: string }>();
     const serverId = serverIdFromUrl ? Number(serverIdFromUrl) : null;
 
-    const { getServer, getCategories, createCategory, editServer } =
-        useServerService();
+    const {
+        getServer,
+        getCategories,
+        createCategory,
+        editServer,
+        deleteServer,
+    } = useServerService();
+    const navigate = useNavigate();
     const [notification, setNotification] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);
@@ -115,6 +120,22 @@ const ServerSection = () => {
         } catch (error) {
             console.error("Error creating category:", error);
             setNotification("Failed to create category.");
+        }
+    };
+
+    const handleDeleteServer = async () => {
+        if (!serverId) return;
+        const confirmed = window.confirm(
+            "Are you sure you want to delete this server? This action cannot be undone."
+        );
+        if (!confirmed) return;
+        try {
+            await deleteServer(serverId);
+            setSuccessMessage(true);
+            navigate("/");
+        } catch (error) {
+            console.error("Error deleting server", error);
+            setNotification("Failed to delete server.");
         }
     };
 
@@ -244,6 +265,15 @@ const ServerSection = () => {
                                 fullWidth
                             >
                                 Save Changes
+                            </Button>
+                            <Button
+                                variant="contained"
+                                color="error"
+                                fullWidth
+                                sx={{ mt: 2 }}
+                                onClick={handleDeleteServer}
+                            >
+                                Delete Server
                             </Button>
                         </Grid>
                     </Grid>
