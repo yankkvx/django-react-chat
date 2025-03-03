@@ -180,7 +180,7 @@ const ServerSection = () => {
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <FormControl fullWidth sx={{ mt: 2 }}>
+                            <FormControl fullWidth>
                                 <InputLabel>Category</InputLabel>
                                 <Select
                                     id="category"
