@@ -26,7 +26,7 @@ const ServerUserSection = () => {
                 const data = await getServer(serverId);
                 setServer(data);
             } catch (error) {
-                console.error("Ошибка при загрузке данных сервера:", error);
+                console.error(error);
             }
         };
 
@@ -57,14 +57,22 @@ const ServerUserSection = () => {
             <Typography variant="h6" gutterBottom>
                 Users
             </Typography>
-            <TableContainer component={Paper} sx={{ maxHeight: 400 }}>
+            <TableContainer
+                component={Paper}
+                sx={{
+                    maxHeight: 380,
+                    overflowY: "auto",
+                }}
+            >
                 <Table stickyHeader>
                     <TableHead>
                         <TableRow>
                             <TableCell>
                                 <strong>User Id</strong>
                             </TableCell>
-                            <TableCell>
+                            <TableCell
+                                sx={{ textAlign: "right", paddingRight: 4 }}
+                            >
                                 <strong>Action</strong>
                             </TableCell>
                         </TableRow>
@@ -78,10 +86,15 @@ const ServerUserSection = () => {
                                     >{`ID ${memberId}`}</Link>
                                 </TableCell>
 
-                                <TableCell>
+                                <TableCell
+                                    sx={{
+                                        display: "flex",
+                                        justifyContent: "flex-end",
+                                    }}
+                                >
                                     <Button
                                         variant="outlined"
-                                        color="secondary"
+                                        color="error"
                                         onClick={() =>
                                             handleDeleteUser(memberId)
                                         }
