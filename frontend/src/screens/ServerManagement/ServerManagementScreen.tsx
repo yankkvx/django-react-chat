@@ -8,7 +8,7 @@ const ServerManagementScreen = () => {
     return (
         <>
             <Header />
-            <Container sx={{ mt: 10 }}>
+            <Container sx={{ pt: 10, pb: 5 }}>
                 <Typography
                     variant="h4"
                     sx={{ mb: 4, fontWeight: "bold" }}
