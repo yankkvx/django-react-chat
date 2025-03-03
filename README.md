@@ -109,6 +109,12 @@ Upcoming features:
 - Join a server and navigate through categories and rooms.
 - Start chatting in real-time with other users.
 
+## Demonstration
+
+![HomePage Screenshot](screenshots/HomeScreen_dark.png)
+
+You can find more screenshots in the [screenshots](screenshots) folder
+
 ## Contributing
 
 Contributions are welcome! Feel free to submit issues or pull requests.
