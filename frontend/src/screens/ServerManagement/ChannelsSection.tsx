@@ -148,8 +148,15 @@ const ChannelsSection = () => {
                         </Button>
                     </Grid>
                 </Grid>
-                <TableContainer component={Paper}>
-                    <Table>
+                <TableContainer
+                    component={Paper}
+                    sx={{
+                        pt: 3,
+                        maxHeight: "360px",
+                        overflowY: "auto",
+                    }}
+                >
+                    <Table stickyHeader>
                         <TableHead>
                             <TableRow>
                                 <TableCell>
@@ -158,8 +165,11 @@ const ChannelsSection = () => {
                                 <TableCell>
                                     <strong>Topic</strong>
                                 </TableCell>
-                                <TableCell align="right">
-                                    <strong>Actions</strong>
+                                <TableCell
+                                    align="right"
+                                    sx={{ paddingRight: 4 }}
+                                >
+                                    <strong>Action</strong>
                                 </TableCell>
                             </TableRow>
                         </TableHead>
