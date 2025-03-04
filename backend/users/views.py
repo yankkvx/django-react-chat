@@ -182,9 +182,8 @@ class UserManagement(APIView):
             if data.get('username') != user.username:
                 user.username = data.get('username', user.username)
             # If the new profile image is different, update the users profile image
-            if data.get('profile_image') != user.profile_image:
-                user.profile_image = data.get(
-                    'profile_image', user.profile_image)
+            if 'profile_image' in request.FILES:
+                user.profile_image = request.FILES['profile_image']
 
             user.save()
 
