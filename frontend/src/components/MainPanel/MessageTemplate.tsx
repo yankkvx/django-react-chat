@@ -81,10 +81,11 @@ const MessageTemplate = ({
             : "/default-avatar.png";
     };
 
+    
     const handleSendClick = (
         e: React.MouseEvent<HTMLDivElement, MouseEvent>
     ) => {
-        e.preventDefault();
+        e.preventDefault(); 
         if (message.trim()) {
             sendJsonMessage({
                 type: "message",
@@ -108,9 +109,7 @@ const MessageTemplate = ({
                                 <ListItem key={index} alignItems="flex-start">
                                     {manyMessagesFromOneUser ? (
                                         <ListItemAvatar>
-                                            <Link
-                                                to={`/profile/${msg.sender_id}`}
-                                            >
+                                            <Link to={`/profile/${msg.sender_id}`}>
                                                 <Avatar
                                                     alt=""
                                                     src={getProfileImage(msg)}
