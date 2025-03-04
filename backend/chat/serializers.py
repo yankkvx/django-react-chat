@@ -8,7 +8,8 @@ class MessageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Message
-        fields = ['id', 'sender', 'content', 'timestamp', 'profile_image']
+        fields = ['id', 'sender', 'sender_id',
+                  'content', 'timestamp', 'profile_image']
 
     def get_profile_image(self, obj):
         return obj.sender.profile_image.url if obj.sender.profile_image else None

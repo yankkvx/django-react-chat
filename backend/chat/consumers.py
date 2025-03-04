@@ -40,10 +40,10 @@ class ChatConsumer(JsonWebsocketConsumer):
         )
 
     def receive_json(self, text_data):
-        
+
         # If the user is not a member of the server, dont process the message
         if not self.is_member:
-            return 
+            return
 
         channel_id = self.channel_id  # Get the current channel id
         sender = self.user  # Get the sender user
@@ -69,6 +69,7 @@ class ChatConsumer(JsonWebsocketConsumer):
                 'new_message': {
                     'id': new_message.id,
                     'sender': new_message.sender.username,
+                    'sender_id': new_message.sender.id,
                     'content': new_message.content,
                     'timestamp': new_message.timestamp.isoformat(),
                     'profile_image': profile_image_url,
