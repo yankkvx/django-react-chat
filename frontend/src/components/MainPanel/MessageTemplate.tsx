@@ -16,6 +16,7 @@ import { MEDIA_URL } from "../../api-config";
 
 interface Message {
     sender: string;
+    sender_id: number;
     content: string;
     timestamp: string;
     profile_image: string;
@@ -80,11 +81,10 @@ const MessageTemplate = ({
             : "/default-avatar.png";
     };
 
-    
     const handleSendClick = (
         e: React.MouseEvent<HTMLDivElement, MouseEvent>
     ) => {
-        e.preventDefault(); 
+        e.preventDefault();
         if (message.trim()) {
             sendJsonMessage({
                 type: "message",
@@ -108,7 +108,9 @@ const MessageTemplate = ({
                                 <ListItem key={index} alignItems="flex-start">
                                     {manyMessagesFromOneUser ? (
                                         <ListItemAvatar>
-                                            <Link to={`/profile/${msg.sender}`}>
+                                            <Link
+                                                to={`/profile/${msg.sender_id}`}
+                                            >
                                                 <Avatar
                                                     alt=""
                                                     src={getProfileImage(msg)}
