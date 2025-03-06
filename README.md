@@ -12,6 +12,7 @@ FlowTalk is a web-based chat application that allows users to communicate in rea
 - **Public Profiles:** Users have public profiles where they can showcase their avatar, username, email, registration date, and the servers they are a part of.
 - **Server Management:** Users can edit server details, delete servers they own, or leave servers they have joined.
 - **Moderation Tools:** Server owners can remove users from their servers, ensuring better control over community interactions.
+- **Chat Moderation:** Messages containing hate speech or offensive words are automatically filtered and replaced with '*'.
 - **Create Server & Categories:** Users can create new servers and if no existing category matches their needs, they can create a new one.
 - **Channel Creation:** Users can create new channels within servers for more focused discussions.
 - **Message History:** Persistent chat history for each room.
@@ -29,6 +30,7 @@ Currently implemented features:
 - Server moderation
 - Channel management
 - Real-time chat functionality
+- Chat moderation to filter hate speech
 - Light and dark theme support
 - Responsive design
 
