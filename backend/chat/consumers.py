@@ -3,6 +3,7 @@ from asgiref.sync import async_to_sync
 from .models import Communication, Message
 from django.contrib.auth import get_user_model
 from server.models import Server
+from .validation import custom_censor
 
 User = get_user_model()
 
@@ -50,13 +51,15 @@ class ChatConsumer(JsonWebsocketConsumer):
         # Extract the message content from the data
         content = text_data['message']
 
+        cencored_content = custom_censor(content)
+
         # Get or create a communication object for the channel
         communication, _ = Communication.objects.get_or_create(
             channel_id=channel_id)
 
         # Create a new message object associated with Communication
         new_message = Message.objects.create(
-            communication=communication, sender=sender, content=content)
+            communication=communication, sender=sender, content=cencored_content)
 
         # Get a profile image url
         profile_image_url = sender.profile_image.url if sender.profile_image else ''
